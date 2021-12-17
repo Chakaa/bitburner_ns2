@@ -1,0 +1,56 @@
+/** @param {NS} ns **/
+export async function main(ns) {
+    await upgradeServers(ns);
+}
+
+export async function upgradeServers(ns) {
+    let moneyPart = .3;
+	let e = 3;
+	let ram = Math.pow(2,e);
+	let maxRam=ns.getPurchasedServerMaxRam();
+	while(ram<maxRam){
+		let i = 0;
+		ram = Math.pow(2,e);
+		
+		while (i < ns.getPurchasedServerLimit()) {
+			let targetHostname = "pserv-" + i;
+			let serverCost = ns.getPurchasedServerCost(ram);
+			ns.print("Trying to create server "+targetHostname+" with "+ram+"Gb for $"+serverCost);
+			if(ns.getServerMoneyAvailable("home")*moneyPart > serverCost){
+				if(ns.serverExists(targetHostname)){
+					ns.print("   Server exists with "+ns.getServerRam(targetHostname)[0]+"Gb");
+					if(ns.getServerRam(targetHostname)[0]<ram){
+						ns.print("      Want to delete and create")
+						await ns.killall(targetHostname);
+						await ns.deleteServer(targetHostname);
+						await purchaseAndRun(ns,targetHostname,ram);
+					}
+					//else{ ns.print("Exists and no upgrade"); }
+				}else{
+					ns.print("   Server doesn't exist");
+					ns.print("      Want to create")
+					await purchaseAndRun(ns,targetHostname,ram);
+				}
+				
+				++i;
+			}else{
+				return;
+			}
+			await ns.sleep(10);
+		}
+		++e;
+	}
+}
+
+export async function purchaseAndRun(ns,targetHostname,ram) {
+	let ramUsageOfScript = ns.getScriptRam("basicHack.ns");
+	let maxNumThreads = Math.floor(ram / ramUsageOfScript);
+	ns.print("Trying to purchase server "+targetHostname+" and running "+maxNumThreads+" threads");
+
+	if(maxNumThreads>=1){
+		var hostname = await ns.purchaseServer(targetHostname, ram);
+		await ns.scp("basicHack.ns", hostname);
+		ns.exec("basicHack.ns", hostname, maxNumThreads);
+		ns.print("Bought it and sent the script");
+	}
+}

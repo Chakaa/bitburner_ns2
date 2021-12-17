@@ -1,0 +1,482 @@
+/** @param {NS} ns **/
+export async function main(ns) {
+    await findContracts(ns);
+}
+
+export async function findContracts(ns, host = "home", parent = null, pathTo = "home") {
+    let servers = ns.scan(host);
+    let fileMask = ".cct";
+    let cc = ns.codingcontract;
+    //Looking for contracts
+    let files = ns.ls(host,fileMask);
+    
+    for (let j = 0; j < files.length; j++) {
+        let f = files[j];
+        await solveContract(ns,f,host,pathTo);
+    }
+    //Looking at connected servers for more contracts
+    for (let i = 0; i < servers.length; i++) {
+        let curServer = ns.getServer(servers[i]);
+        if ((curServer.hostname != "home") && curServer.hostname != parent) {
+            await findContracts(ns, curServer.hostname, host, pathTo+">"+curServer.hostname)
+        }
+    }
+}
+
+export async function solveContract(ns,filename,hostname,pathTo) {
+    let cc = ns.codingcontract;
+    let type = cc.getContractType(filename, hostname);
+    ns.tprint("Solving "+filename+" on " + pathTo + "("+type+")");
+
+    switch(type){
+        case "Find Largest Prime Factor":
+            await largestPrimeFactor(ns,filename,hostname);
+            break;
+        case "Subarray with Maximum Sum":
+            await subarrayMaxSum(ns,filename,hostname);
+            break;
+        case "Total Ways to Sum":
+            await totalWaysSum(ns,filename,hostname);
+            break;
+        case "Spiralize Matrix":
+            await spiralizeMatrix(ns,filename,hostname);
+            break;
+        case "Array Jumping Game":
+            await jumpingGame(ns,filename,hostname);
+            break;
+        case "Merge Overlapping Intervals":
+            await mergeIntervals(ns,filename,hostname);
+            break;
+        case "Generate IP Addresses":
+            await generateIP(ns,filename,hostname);
+            break;
+        case "Algorithmic Stock Trader I":
+            await solveAlgoStock1(ns,filename,hostname);
+            break;
+        case "Algorithmic Stock Trader II":
+            await solveAlgoStock2(ns,filename,hostname);
+            break;
+        case "Algorithmic Stock Trader III":
+            await solveAlgoStock3(ns,filename,hostname);
+            break;
+        case "Algorithmic Stock Trader IV":
+            await solveAlgoStock4(ns,filename,hostname);
+            break;
+        case "Minimum Path Sum in a Triangle":
+            await minPathTriangle(ns,filename,hostname);
+            break;
+        case "Unique Paths in a Grid I":
+            await uniquePath1(ns,filename,hostname);
+            break;
+        case "Unique Paths in a Grid II":
+            await uniquePath2(ns,filename,hostname);
+            break;
+        case "Sanitize Parentheses in Expression":
+            await sanitizeParentheses(ns,filename,hostname);
+            break;
+        case "Find All Valid Math Expressions":
+            await allValidMathExpressions(ns,filename,hostname);
+            break;
+        default:
+            break;
+    }
+}
+
+//Contract type = "Find Largest Prime Factor":
+export async function largestPrimeFactor(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 1;
+
+    const isPrime = (x) => {
+        if (x <= 1)
+            return false;
+        for(let i = 2; i <= x / 2; i++) {
+            if(x % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    for(let i = 2; i <= inputData / 2; i++) {
+        // check if i is a factor of inputData
+        if(inputData % i == 0 && isPrime(i)==true && i>answer)
+            answer=i
+    }
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (largestPrimeFactor)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Subarray with Maximum Sum":
+export async function subarrayMaxSum(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+
+    let maxint = Math.pow(2, 53)
+    let answer = -maxint - 1
+    let max_ending_here = 0
+      
+    for (let i = 0; i < inputData.length; i++)
+    {
+        max_ending_here = max_ending_here + inputData[i]
+        if (answer < max_ending_here)
+            answer = max_ending_here
+ 
+        if (max_ending_here < 0)
+            max_ending_here = 0
+    }
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (subarrayMaxSum)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Total Ways to Sum":
+export async function totalWaysSum(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    let table = new Array(inputData + 1);
+    for(let i = 0; i < inputData + 1; i++)
+        table[i]=0;
+
+    table[0] = 1;
+
+    for (let i = 1; i < inputData; i++)
+        for (let j = i; j <= inputData; j++)
+            table[j] += table[j - i];
+
+    answer = table[inputData]
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (totalWaysSum)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Spiralize Matrix":
+export async function spiralizeMatrix(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = [];
+
+    /*
+    let bounds = [0,0,0,0];
+    let way = [1,0]
+    let i=0
+    let j=0
+
+    while(1==1){
+        answer.push(inputData[j][i]);
+
+        if(i==0+bounds[3] && j==0+bounds[0]){
+            way=[1,0];
+            bounds[0]=bounds[0]+1;
+        }else if(i==inputData[0].length+bounds[1] && j==0+bounds[0]){
+            way=[0,1];
+            bounds[1]=bounds[1]+1;
+        }else if(i==inputData[0].length+bounds[1] && j==inputData.length+bounds[2]){
+            way=[-1,0];
+            bounds[2]=bounds[2]+1;
+        }else if(i==0+bounds[2] && j==inputData.length+bounds[3]){
+            way=[0,-1];
+            bounds[3]=bounds[3]+1;
+        }
+
+        i=i+way[0]
+        j=j+way[0]
+    }
+    */
+
+    while (inputData.length) {
+        answer.push(
+            ...inputData.shift(),
+            ...inputData.map(a => a.pop()),
+            ...(inputData.pop() || []).reverse(),
+            ...inputData.map(a => a.shift()).reverse()
+        );
+    }
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (spiralizeMatrix)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Array Jumping Game":
+export async function jumpingGame(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+    
+    const findPreds = (array) => {
+        if(array.length==1){
+            return true;
+        }
+        for(let i=array.length-2;i>=0;i--){
+            if(array[i]>=array.length-i-1){
+                if(findPreds(array.slice(0, i + 1))){
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    answer = findPreds(inpuData)?1:0;
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (jumpingGame)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Merge Overlapping Intervals":
+export async function mergeIntervals(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = [];
+
+    for(let i=0;i<inputData.length-1;i++){
+        for(let j=i+1;j<inputData.length;j++){
+            if(inputData[i][1]>=inputData[j][0]){
+                inputData[i][1]=inputData[j][1];
+                inputData.splice(j, 1);
+                --i;
+                break;
+            }
+        }
+    }
+
+    answer = inputData;
+    for(let i=0;i<answer.length-1;i++){
+        if(answer[i][0]>answer[i+1][0]){
+            let tmp = answer[i+1];
+            answer[i+1]=answer[i];
+            answer[i]=tmp;
+            --i;
+        }
+    }
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (mergeIntervals)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Generate IP Addresses":
+export async function generateIP(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = [];
+
+    if(inputData.length>=4 && inputData.length<=12){
+        let size = inputData.length;
+        let snew = inputData;
+ 
+        for(let i = 1; i < size - 2; i++) {
+            for(let j = i + 1; j < size - 1; j++) {
+                for(let k = j + 1; k < size; k++) {
+                    snew = snew.substring(0, k) + "." + snew.substring(k);
+                    snew = snew.substring(0, j) + "." + snew.substring(j);
+                    snew = snew.substring(0, i) + "." + snew.substring(i);
+                    let processed = snew;
+                    snew = inputData;
+
+                    let splitted = processed.split(".");
+                    if(splitted.length!=4){
+                        continue;
+                    }
+                    let good = true;
+                    for(let l=0;l<splitted.length;l++){
+                        let val=parseInt(splitted[l]);
+                        if(val<0 || val>255 || val.toString().length!=splitted[l].length)
+                            good=false
+                    }
+ 
+                    if (good) {
+                        answer.push(processed);
+                    }
+                }
+            }
+        }
+    }
+
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Algorithmic Stock Trader I"
+export async function solveAlgoStock1(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    for(var i=0;i<inputData.length;i++){
+        let sVal=inputData[i];
+        for(var j=i;j<inputData.length;j++){
+            if(answer<inputData[j]-inputData[i]){
+                answer=inputData[j]-inputData[i];
+            }
+        }
+    }
+
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Algorithmic Stock Trader II":
+export async function solveAlgoStock2(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+    let stock = 0;
+
+    for(var i=0;i<inputData.length;i++){
+        let thisVal=inputData[i];
+        let nextVal=i<inputData.length-1?inputData[i+1]:0;
+
+        if(stock==0 && thisVal<nextVal){
+            ++stock;
+            answer=answer-thisVal;
+        }else if(stock==1 && thisVal>nextVal){
+            --stock;
+            answer=answer+thisVal;
+        }
+    }
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Algorithmic Stock Trader III":
+export async function solveAlgoStock3(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+    let answers = [];
+    let stock = 0;
+
+    for(var i=0;i<inputData.length;i++){
+        let thisVal=inputData[i];
+        let nextVal=i<inputData.length-1?inputData[i+1]:0;
+
+        if(stock==0 && thisVal<nextVal){
+            ++stock;
+            answer=answer-thisVal;
+        }else if(stock==1 && thisVal>nextVal){
+            --stock;
+            answer=answer+thisVal;
+
+            if(answers.length<2){
+                answers.push(answer)
+            }else{
+                if(answers[0]<answers[1] && answers[0]<answer)
+                    answers[0]=answer
+                else if(answers[1]<answers[0] && answers[1]<answer)
+                    answers[1]=answer
+            }
+            answer=0
+        }
+    }
+    answer = (answers.length>0?answers[0]:0)+(answers.length>1?answers[1]:0);
+    //ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+    ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (solveAlgoStock3)");
+}
+//Contract type = "Algorithmic Stock Trader IV":
+export async function solveAlgoStock4(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (solveAlgoStock4)");
+}
+//Contract type = "Minimum Path Sum in a Triangle":
+export async function minPathTriangle(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    // For storing the result in a 1-D array, and simultaneously updating the result.
+    let memo = [];
+    let n = inputData.length - 1;
+   
+    // For the bottom row
+    for(let i = 0; i < inputData[n].length; i++)
+        memo[i] = inputData[n][i];
+   
+    // Calculation of the remaining rows, in bottom up manner.
+    for(let i = inputData.length - 2; i >= 0; i--)
+        for(let j = 0; j < inputData[i].length; j++)
+            memo[j] = inputData[i][j] + Math.min(memo[j], memo[j + 1]);
+   
+    // Return the top element
+    answer = memo[0];
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (minPathTriangle)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Unique Paths in a Grid I":
+export async function uniquePath1(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (uniquePath1)");
+}
+//Contract type = "Unique Paths in a Grid II":
+export async function uniquePath2(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (uniquePath2)");
+}
+//Contract type = "Sanitize Parentheses in Expression":
+export async function sanitizeParentheses(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = [];
+
+    const isParenthesis = (c) => { return ((c == '(') || (c == ')')); };
+    const isValidString = (str) => {
+        let cnt = 0;
+        for (let i = 0; i < str.length; i++)
+        {
+            if (str[i] == '(')
+                cnt++;
+            else if (str[i] == ')')
+                cnt--;
+            if (cnt < 0)
+                return false;
+        }
+        return (cnt == 0);
+    };
+
+    // visit set to ignore already visited string
+    let visit = new Set();
+
+    // queue to maintain BFS
+    let q = [];
+    let temp;
+    let level = false;
+
+    // pushing given string as
+    // starting node into queue
+    q.push(inputData);
+    visit.add(inputData);
+    while (q.length!=0) {
+        inputData = q.shift();
+        if (isValidString(inputData)) {
+            answer.push(inputData);
+
+            // If answer is found, make level true so that valid string of only that level are processed.
+            level = true;
+        }
+        if (level)
+            continue;
+        for (let i = 0; i < inputData.length; i++) {
+            if (!isParenthesis(inputData[i]))
+                continue;
+
+            // Removing parenthesis from inputData and pushing into queue,if not visited already
+            temp = inputData.substring(0, i) + inputData.substring(i + 1);
+            if (!visit.has(temp)) {
+                q.push(temp);
+                visit.add(temp);
+            }
+        }
+    }
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (sanitizeParentheses)");
+    ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+}
+//Contract type = "Find All Valid Math Expressions"
+export async function allValidMathExpressions(ns,filename,hostname) {
+    let cc = ns.codingcontract;
+    let inputData = cc.getData(filename, hostname);
+    let answer = 0;
+
+    ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (allValidMathExpressions)");
+}
