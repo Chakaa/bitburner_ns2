@@ -16,7 +16,7 @@ export async function upgradeServers(ns) {
 			let targetHostname = "pserv-" + i;
 			let serverCost = ns.getPurchasedServerCost(ram);
 			ns.print("Trying to create server "+targetHostname+" with "+ram+"Gb for $"+serverCost);
-			if(ns.getServerMoneyAvailable("home")*moneyPart > serverCost){
+			if(ns.getServerMoneyAvailable("home")*(ns.getPurchasedServers().length!=ns.getPurchasedServerLimit()?1:moneyPart) > serverCost){
 				if(ns.serverExists(targetHostname)){
 					ns.print("   Server exists with "+ns.getServerRam(targetHostname)[0]+"Gb");
 					if(ns.getServerRam(targetHostname)[0]<ram){

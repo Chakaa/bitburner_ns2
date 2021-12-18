@@ -5,15 +5,15 @@ export async function main(ns) {
 
 export async function buildHacknetwork(ns) {
     let moneyPart = .01;
+    let hn = ns.hacknet;
 
     while(true){
-        let allowedMoney = ns.getServerMoneyAvailable("home")*moneyPart;
+        let allowedMoney = ns.getServerMoneyAvailable("home")*(hn.numNodes()<3?1:moneyPart);
 
         let index=-1;
         let kind = "";
         let minCost=Infinity;
 
-        let hn = ns.hacknet;
         let newNodeCost = hn.getPurchaseNodeCost();
 
         for(let i=0;i<hn.numNodes();i++){

@@ -3,6 +3,9 @@ export async function main(ns) {
     await findContracts(ns);
 }
 
+//https://bitburner.readthedocs.io/en/latest/basicgameplay/codingcontracts.html
+//https://jsfiddle.net/
+
 export async function findContracts(ns, host = "home", parent = null, pathTo = "home") {
     let servers = ns.scan(host);
     let fileMask = ".cct";
@@ -290,6 +293,7 @@ export async function generateIP(ns,filename,hostname) {
         }
     }
 
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (generateIP)");
     ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
 }
 //Contract type = "Algorithmic Stock Trader I"
@@ -307,6 +311,7 @@ export async function solveAlgoStock1(ns,filename,hostname) {
         }
     }
 
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (solveAlgoStock1)");
     ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
 }
 //Contract type = "Algorithmic Stock Trader II":
@@ -328,6 +333,8 @@ export async function solveAlgoStock2(ns,filename,hostname) {
             answer=answer+thisVal;
         }
     }
+
+    //ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (solveAlgoStock2)");
     ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
 }
 //Contract type = "Algorithmic Stock Trader III":
@@ -361,8 +368,9 @@ export async function solveAlgoStock3(ns,filename,hostname) {
         }
     }
     answer = (answers.length>0?answers[0]:0)+(answers.length>1?answers[1]:0);
-    //ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
+    
     ns.tprint("I do not know the solution here : "+filename+" on "+hostname+" (solveAlgoStock3)");
+    //ns.tprint(cc.attempt(answer,filename,hostname,{returnReward:true}));
 }
 //Contract type = "Algorithmic Stock Trader IV":
 export async function solveAlgoStock4(ns,filename,hostname) {
