@@ -1,5 +1,5 @@
 /**
- * A *very basic* script for growing a host.
+ * A *very basic* script for growing a host. test
  */
 /** @param {NS} ns **/
 

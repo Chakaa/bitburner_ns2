@@ -6,12 +6,16 @@ const SCRIPTS = [
 
 const joinPath = (...parts) => parts.join('/');
 
+const baseUrl = "https://raw.githubusercontent.com"
+const user = "Chakaa"
+const repo = "bitburner_ns2"
+const branch = "main"
+
+/** @param {NS} ns **/
 export async function main(ns) {
-  const scriptServer = ns.args[0] || 'http://localhost:8080';
-  const scriptRoot = 'scripts';
 
   for (const script of SCRIPTS) {
-    const url = joinPath(scriptServer, scriptRoot, script);
+    const url = joinPath(baseUrl, user, repo, branch, script);
 
     ns.tprint(`Downloading ${script}`);
     const success = await ns.wget(url, script);
