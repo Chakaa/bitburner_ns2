@@ -4,9 +4,9 @@
 /** @param {NS} ns **/
 
 export async function main(ns) {
-    const host = ns.args[0] || ns.getHostname();
+    const hosts = ns.args[0] || ns.getHostname();
 
     while (true) {
-        await ns.grow(host);
+        await ns.grow(hosts);
     }
 }
