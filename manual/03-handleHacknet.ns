@@ -1,6 +1,11 @@
 /** @param {NS} ns **/
 export async function main(ns) {
+  	ns.disableLog("ALL");
     await buildHacknetwork(ns);
+    while(true){
+        await ns.sleep(60000);
+        await buildHacknetwork(ns);
+    }
 }
 
 export async function buildHacknetwork(ns) {
@@ -38,15 +43,15 @@ export async function buildHacknetwork(ns) {
         switch(kind){
             case "l":
                 hn.upgradeLevel(index,1);
-                ns.print("Bought Level on index :"+index);
+                ns.print("Bought Level on index: "+index);
                 break;
             case "r":
                 hn.upgradeRam(index,1);
-                ns.print("Bought RAM on index :"+index);
+                ns.print("Bought RAM on index: "+index);
                 break;
             case "c":
                 hn.upgradeCore(index,1);
-                ns.print("Bought Core on index :"+index);
+                ns.print("Bought Core on index: "+index);
                 break;
             case "":
                 if(newNodeCost<allowedMoney){

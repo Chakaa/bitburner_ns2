@@ -1,13 +1,21 @@
 /** @param {NS} ns **/
 export async function main(ns) {
-    var force = ns.args[0];
-    await spreadHack(ns,force);
+    ns.disableLog("ALL");
+
+    //var force = ns.args[0];
+    //await spreadHack(ns,force);
+    
+    await spreadHack(ns,true);
+    while(true){
+        await ns.sleep(60000);
+        await spreadHack(ns,false);
+    }
 }
 
 export async function spreadHack(ns, forceDelete = true, host = "home", parent = null) {
     let servers = ns.scan(host);
     let scriptname = "basicHack.ns";
-    ns.print("Hosts on " + host + ": " + servers);
+    //ns.print("Hosts on " + host + ": " + servers);
     for (let i = 0; i < servers.length; i++) {
         let curServer = ns.getServer(servers[i]);
 
@@ -36,14 +44,14 @@ export async function spreadHack(ns, forceDelete = true, host = "home", parent =
                         ns.sqlinject(curServer.hostname);
                     }
 
-                    ns.print("Checking port count on " + curServer.hostname);
+                    //ns.print("Checking port count on " + curServer.hostname);
                     if (curServer.openPortCount >= curServer.numOpenPortsRequired) {
                         ns.print("Nuking " + curServer.hostname);
                         ns.nuke(curServer.hostname);
                     }
                 }
 
-                ns.print("Server has admin rights: " + curServer.hasAdminRights);
+                //ns.print("Server has admin rights: " + curServer.hasAdminRights);
                 if (curServer.hasAdminRights) {
                     /*if (!curServer.backdoorInstalled) {
                         installBackdoor()
@@ -60,14 +68,14 @@ export async function spreadHack(ns, forceDelete = true, host = "home", parent =
                         await ns.scp(scriptname, "home", curServer.hostname);
                     }
 
-                    ns.print("Starting script on " + curServer.hostname + " with " + maxNumThreads + " threads.");
                     if (maxNumThreads >= 1 && !ns.scriptRunning(scriptname, curServer.hostname)) {
+                        ns.print("Starting script on " + curServer.hostname + " with " + maxNumThreads + " threads.");
                         ns.exec(scriptname, curServer.hostname, maxNumThreads);
                     }
                 }
             }
 
-            await spreadHack(ns, true, curServer.hostname, host)
+            await spreadHack(ns, forceDelete, curServer.hostname, host)
         }
     }
 

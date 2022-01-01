@@ -1,0 +1,21 @@
+/** @param {NS} ns **/
+export async function main(ns) {
+    ns.disableLog("ALL");
+    var target = ns.args[0];
+    
+    await findServer(ns,target);
+}
+
+export async function findServer(ns, target, host = "home", parent = null, pathTo = "home") {
+    let servers = ns.scan(host);
+    if(host==target)
+        ns.tprint("Found server "+target+" here: " + pathTo);
+
+    //Looking at connected servers for more depth
+    for (let i = 0; i < servers.length; i++) {
+        let curServer = ns.getServer(servers[i]);
+        if ((curServer.hostname != "home") && curServer.hostname != parent) {
+            await findServer(ns, target, curServer.hostname, host, pathTo+">"+curServer.hostname)
+        }
+    }
+}
