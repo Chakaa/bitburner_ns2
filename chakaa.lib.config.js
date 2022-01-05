@@ -43,4 +43,4 @@ export const UPGRADES_TIME_BETWEEN_BUYS = 5000.0 // Time to wait between checks.
 
 //Faction config
 export const FACTION_WORK_LOOP_CHECK = 60000;
-export const WORK_ORDER = ["hacking","hacking contracts","hackingcontracts","field","fieldwork","field work","security","securitywork","security work"]
+export const WORK_ORDER = ["hacking","hacking contracts","hackingcontracts","field","fieldwork","field work","security","securitywork","security work"];

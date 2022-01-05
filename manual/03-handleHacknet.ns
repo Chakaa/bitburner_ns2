@@ -10,6 +10,7 @@ export async function main(ns) {
 
 export async function buildHacknetwork(ns) {
     let moneyPart = .01;
+    let nodeLimit = 20;
     let hn = ns.hacknet;
 
     while(true){
@@ -54,7 +55,7 @@ export async function buildHacknetwork(ns) {
                 ns.print("Bought Core on index: "+index);
                 break;
             case "":
-                if(newNodeCost<allowedMoney){
+                if(newNodeCost<allowedMoney && hn.numNodes()<nodeLimit){
                     ns.print("Bought new node");
                     hn.purchaseNode();
                 }else{

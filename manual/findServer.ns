@@ -1,21 +1,37 @@
-/** @param {NS} ns **/
-export async function main(ns) {
-    ns.disableLog("ALL");
-    var target = ns.args[0];
-    
-    await findServer(ns,target);
+const findPath = (ns, target, serverName, serverList, ignore, isFound) => {
+	ignore.push(serverName);
+	let scanResults = ns.scan(serverName);
+	for (let server of scanResults) {
+		if (ignore.includes(server)) {
+			continue;
+		}
+		if (server === target) {
+			serverList.push(server);
+			return [serverList, true];
+		}
+		serverList.push(server);
+		[serverList, isFound] = findPath(ns, target, server, serverList, ignore, isFound);
+		if (isFound) {
+			return [serverList, isFound];
+		}
+		serverList.pop();
+	}
+	return [serverList, false];
 }
 
-export async function findServer(ns, target, host = "home", parent = null, pathTo = "home") {
-    let servers = ns.scan(host);
-    if(host==target)
-        ns.tprint("Found server "+target+" here: " + pathTo);
 
-    //Looking at connected servers for more depth
-    for (let i = 0; i < servers.length; i++) {
-        let curServer = ns.getServer(servers[i]);
-        if ((curServer.hostname != "home") && curServer.hostname != parent) {
-            await findServer(ns, target, curServer.hostname, host, pathTo+">"+curServer.hostname)
-        }
-    }
+/** @param {NS} ns **/
+export async function main(ns) {
+	let startServer = ns.getHostname();
+	let target = ns.args[0];
+	if (target === undefined) {
+		ns.alert('Please provide target server');
+		return;
+	}
+	let [results, isFound] = findPath(ns, target, startServer, [], [], false);
+	if (!isFound) {
+		ns.alert('Server not found!');
+	} else {
+		ns.tprint(results.join(' --> '));
+	}
 }

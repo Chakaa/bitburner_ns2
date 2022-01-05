@@ -1,13 +1,12 @@
 /** @param {NS} ns **/
 export async function main(ns) {
     ns.disableLog("ALL");
-
     //var force = ns.args[0];
     //await spreadHack(ns,force);
     
     await spreadHack(ns,true);
     while(true){
-        await ns.sleep(60000);
+        await ns.sleep(10000);
         await spreadHack(ns,false);
     }
 }
@@ -18,6 +17,7 @@ export async function spreadHack(ns, forceDelete = true, host = "home", parent =
     //ns.print("Hosts on " + host + ": " + servers);
     for (let i = 0; i < servers.length; i++) {
         let curServer = ns.getServer(servers[i]);
+        let target = !servers[i].includes("pserv") && (ns.fileExists("SQLInject.exe", "home") || !ns.getServer("joesguns").hasAdminRights)?servers[i]:"joesguns";
 
         if ((curServer.hostname != "home") && curServer.hostname != parent) {
             //ns.print("Required hacking level " + curServer.requiredHackingSkill);
@@ -70,7 +70,7 @@ export async function spreadHack(ns, forceDelete = true, host = "home", parent =
 
                     if (maxNumThreads >= 1 && !ns.scriptRunning(scriptname, curServer.hostname)) {
                         ns.print("Starting script on " + curServer.hostname + " with " + maxNumThreads + " threads.");
-                        ns.exec(scriptname, curServer.hostname, maxNumThreads);
+                        ns.exec(scriptname, curServer.hostname, maxNumThreads, target);
                     }
                 }
             }

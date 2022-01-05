@@ -10,9 +10,9 @@ export async function main(ns) {
 
     let runningHost = "home";
     let myScripts = [
-        { name:"01-spreadHack.ns",saveMoneyCheck:false }
-        ,{ name:"02-upgradeServers.ns",saveMoneyCheck:true }
+        //{ name:"01-spreadHack.ns",saveMoneyCheck:false }
         ,{ name:"03-handleHacknet.ns",saveMoneyCheck:true }
+        //,{ name:"02-upgradeServers.ns",saveMoneyCheck:true }
         ,{ name:"04-processCodingContracts.ns",saveMoneyCheck:false }
         ,{ name:"05-stockTrader.ns",saveMoneyCheck:true }
     ];
@@ -27,5 +27,15 @@ export async function main(ns) {
         if(!scriptSaveMoneyCheck || !saveMoney){
             ns.exec(scriptName, runningHost, 1)
         }
+        ns.tprint(scriptName)
     }
+
+    let target = !ns.getServer("joesguns").hasAdminRights?"n00dles":"joesguns";
+    let scriptname = "basicHack.ns";
+    let maxNumThreads = .75 * Math.floor((ns.getServer(runningHost).maxRam-ns.getServer(runningHost).ramUsed) / ns.getScriptRam(scriptname));
+    if (maxNumThreads >= 1 && !ns.scriptRunning(scriptname, runningHost)) {
+        ns.print("Starting script on " + runningHost + " with " + maxNumThreads + " threads.");
+        ns.exec(scriptname, runningHost, maxNumThreads,target);
+    }
+    
 }

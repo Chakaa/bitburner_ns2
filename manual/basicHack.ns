@@ -1,8 +1,10 @@
 /** @param {NS} ns **/
 export async function main(ns) {
     var target = ns.args[0];
-    //await hackit(ns,target)
-    await hackit(ns,"joesguns")
+    var hostingServer = ns.getHostname();
+    await hackit(ns,target)
+    //await hackit(ns,"joesguns")
+    //await hackit(ns,hostingServer=="home"?"joesguns":hostingServer);
     // await hackit(ns,"phantasy")
 }
 
@@ -14,12 +16,16 @@ export async function hackit(ns, host = "joesguns") {
     // }
     // ns.nuke(host);
     while(true) {
-        if (ns.getServerSecurityLevel(host) > securityThresh) {
-            await ns.weaken(host);
-        } else if (ns.getServerMoneyAvailable(host) < moneyThresh) {
-            await ns.grow(host);
-        } else {
-            await ns.hack(host);
-        }
+        //if(ns.getServer(host).hasAdminRights){
+            if (ns.getServerSecurityLevel(host) > securityThresh) {
+                await ns.weaken(host);
+            } else if (ns.getServerMoneyAvailable(host) < moneyThresh) {
+                await ns.grow(host);
+            } else {
+                await ns.hack(host);
+            }
+        //}else{
+        //    await ns.sleep(10)
+        //}
     }
 }

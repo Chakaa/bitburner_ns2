@@ -172,6 +172,10 @@ export async function main(ns) {
 
   ns.tprint(`Running in simulation mode: ${isSimulated ? 'YES' : 'NO'}`);
 
+  while(!ns.stock.purchase4SMarketDataTixApi()){
+    await ns.sleep(60000);
+  }
+
   // Values that are shared across ticks.
   const state = {
     netWorth: calculateNetWorth(ns),

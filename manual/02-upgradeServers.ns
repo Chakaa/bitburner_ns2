@@ -14,7 +14,8 @@ export async function upgradeServers(ns) {
 	let e = 3;
 	let ram = Math.pow(2,e);
 	let maxRam=ns.getPurchasedServerMaxRam();
-	if(ns.getServerRam("pserv-24")[0]>=maxRam)
+	let maxBought = ns.serverExists("pserv-24");
+	if(maxBought && ns.getServerRam("pserv-24")[0]>=maxRam)
 		return;
 	while(ram<maxRam){
 		let i = 0;
@@ -28,8 +29,8 @@ export async function upgradeServers(ns) {
 			let serverExists = ns.serverExists(targetHostname);
 			let lessRam = ns.serverExists(targetHostname) && ns.getServerRam(targetHostname)[0]<ram;
 			let currentMoney = ns.getServerMoneyAvailable("home");
-			let minMoney = ns.getServerMoneyAvailable("home")*(ns.getPurchasedServers().length!=ns.getPurchasedServerLimit()?1:moneyPart);
-			let minOwnedMoney = ns.getServerMoneyAvailable("home")/(ns.getPurchasedServers().length!=ns.getPurchasedServerLimit()?1:moneyPart);
+			let minMoney = ns.getServerMoneyAvailable("home")*(ns.getPurchasedServers().length!=ns.getPurchasedServerLimit() || maxBought?1:moneyPart);
+			let minOwnedMoney = ns.getServerMoneyAvailable("home")/(ns.getPurchasedServers().length!=ns.getPurchasedServerLimit() || maxBought?1:moneyPart);
 			let enoughMoney = minMoney > serverCost ;
 
 			if(serverExists && !lessRam){
@@ -58,12 +59,13 @@ export async function upgradeServers(ns) {
 export async function purchaseAndRun(ns,targetHostname,ram) {
 	let ramUsageOfScript = ns.getScriptRam("basicHack.ns");
 	let maxNumThreads = Math.floor(ram / ramUsageOfScript);
+    let target = !ns.getServer("joesguns").hasAdminRights?"n00dles":"joesguns";
 	ns.print("Trying to purchase server "+targetHostname+" and running "+maxNumThreads+" threads");
 
 	if(maxNumThreads>=1){
 		var hostname = await ns.purchaseServer(targetHostname, ram);
 		await ns.scp("basicHack.ns", hostname);
-		ns.exec("basicHack.ns", hostname, maxNumThreads);
+		ns.exec("basicHack.ns", hostname, maxNumThreads,target);
 		ns.print("Bought it and sent the script");
 	}
 }

@@ -1,0 +1,18 @@
+/** @param {NS} ns **/
+export async function main(ns) {
+    ns.disableLog("ALL");
+    ns.disableLog("stock.buy");
+    ns.disableLog("stock.sell");
+    sellStocks(ns);
+}
+
+function sellStocks(ns){
+    const stockSymbols = ns.stock.getSymbols();
+    const stocks = {};
+    for (const symbol of stockSymbols) {
+        const pos = ns.stock.getPosition(symbol);
+		if(pos[0]>0){
+			ns.stock.sell(symbol, pos[0]);
+		}
+	}
+}
