@@ -93,8 +93,70 @@ export async function waitUntil(ns,p,delay=60000){
     await ns.sleep(delay);
   }
 }
+export function connectToServer(ns,source,server){
+	let [results, isFound] = findPath(ns, server, source, [], [], false);
+	
+	if (!isFound) {
+		error(ns,`Server ${server} not found!`);
+		return false
+	}
+	for (const r of results) {
+		ns.connect(r);
+	}
+	debug(ns,`Connected to ${server}.`);
+	return true;
+}
 export async function manualBackdoor(ns, server) {
-  ns.connect(server);
-  await ns.installBackdoor();
-  ns.connect("home");
+	let startServer = ns.getHostname();
+	if(connectToServer(ns,startServer,server)){
+		await ns.installBackdoor();
+		log(ns,`Backdoor installed on ${server}`);
+	}
+	ns.connect(startServer);
+}
+export function findPath(ns, target, serverName, serverList, ignore, isFound){
+	ignore.push(serverName);
+	let scanResults = ns.scan(serverName);
+	for (let server of scanResults) {
+		if (ignore.includes(server)) {
+			continue;
+		}
+		if (server === target) {
+			serverList.push(server);
+			return [serverList, true];
+		}
+		serverList.push(server);
+		[serverList, isFound] = findPath(ns, target, server, serverList, ignore, isFound);
+		if (isFound) {
+			return [serverList, isFound];
+		}
+		serverList.pop();
+	}
+	return [serverList, false];
+}
+export function fuzzyCheck(fullString,partString) {
+    let hay = fullString.toLowerCase(), i = 0, n = -1, l;
+    let s = partString.toLowerCase();
+    for (; l = s[i++] ;) if (!~(n = hay.indexOf(l, n + 1))) return false;
+    return true;
+};
+export function fuzzyFindPath(ns, target, serverName, serverList, ignore, isFound){
+	ignore.push(serverName);
+	let scanResults = ns.scan(serverName);
+	for (let server of scanResults) {
+		if (ignore.includes(server)) {
+			continue;
+		}
+		if (fuzzyCheck(server, target)) {
+			serverList.push(server);
+			return [serverList, true];
+		}
+		serverList.push(server);
+		[serverList, isFound] = findPath(ns, target, server, serverList, ignore, isFound);
+		if (isFound) {
+			return [serverList, isFound];
+		}
+		serverList.pop();
+	}
+	return [serverList, false];
 }

@@ -1,5 +1,5 @@
-import { HACK_RATIO,OPS_NAME,OPS_RAM,HOME_RAM_RESERVED,MIN_MONEY_FOR_HACK,GROWTH_FACTOR,MIN_SLEEP_TIME } from './chakaa.lib.config.js';
-import { info, log, toMoney, toInt, walk } from './chakaa.lib.functions.js';
+import { HACK_RATIO,OPS_NAME,OPS_RAM,BKD_NAME,BKD_RAM,HOME_RAM_RESERVED,MIN_MONEY_FOR_HACK,GROWTH_FACTOR,MIN_SLEEP_TIME } from './chakaa.lib.config.js';
+import { info, log, error, debug, toMoney, toInt, walk, manualBackdoor } from './chakaa.lib.functions.js';
 
 /**
  * Script managing all servers.
@@ -21,7 +21,7 @@ export async function main(ns) {
     let tasks = await generateTasks(ns,network);
 
     let min_time_val = await assignTasks(ns, network, tasks);
-    sleep = Math.max(Math.min(sleep, min_time_val) + 0.2, MIN_SLEEP_TIME);
+    sleep = Math.max(Math.min(sleep, min_time_val) + 500, MIN_SLEEP_TIME);
   
     //writeTSV("/run/shodan/network.txt", network, {"host", "max_threads", "threads", "weaken", "grow", "hack", "priority", "money", "max_money"})
 
@@ -116,7 +116,7 @@ export async function mapNetwork(ns) {
 // Appease the RAM checker (ns.brutessh() ns.ftpcrack() ns.relaysmtp() ns.httpworm() ns.sqlinject())
 export async function tryPwn(ns,host) {
   if(ns.hasRootAccess(host)) return;
-  log(ns,`Trying to pwn ${host}`);
+  debug(ns,`Trying to pwn ${host}`);
   let ports = ns.getServerNumPortsRequired(host);
   let hacks = ["brutessh", "ftpcrack", "relaysmtp", "httpworm", "sqlinject"];
   for (let i = 0; i < hacks.length; i++) {
@@ -129,9 +129,9 @@ export async function tryPwn(ns,host) {
 
   if(ports <= 0){
     ns.nuke(host)
-    log(ns,`Root access gained on ${host}`);
+    debug(ns,`Root access gained on ${host}`);
   }else{
-    log(ns,`Root access failed on ${host}`);
+    debug(ns,`Root access failed on ${host}`);
   }
 }
 
@@ -139,10 +139,31 @@ export async function tryPwn(ns,host) {
 export function isHackable(ns,info) {
   return info.root && info.max_money > 0 && info.hack_level <= ns.getHackingLevel()
 }
+// check if host is backdoorable
+export function isBackdoorable(ns,info) {
+  return info.root && !info.host.includes("pserv") && info.hack_level <= ns.getHackingLevel() && !ns.getServer(info.host).backdoorInstalled;
+}
 
 // Generate "pre-task" information about how much we want to weaken/hack/grow this host and how much money we want it to have.
 export async function preTask(ns,info) {
   let host = info.host
+  if(isBackdoorable(ns,info)){
+    /*
+    // let t = Math.max(0,Math.floor((info.ram - info.ram_used)/BKD_RAM));
+    let t = 1;
+    if(t>0 && !ns.isRunning(BKD_NAME, host)){
+      log(ns,`Gonna BKD ${host} with ${t} threads`);
+      ns.tprint(`Gonna BKD ${host} with ${t} threads`);
+      if(ns.fileExists(BKD_NAME, host)){
+        ns.rm(BKD_NAME, host);
+      }
+      await ns.scp(BKD_NAME,"home", host);
+      await ns.exec(BKD_NAME,host,t);
+    }*/
+    try{
+      await manualBackdoor(ns,host);
+    }catch(e){ }
+  }
   if(isHackable(ns,info)){
     TARGET_MONEY[host] = TARGET_MONEY[host] || Math.min(Math.max(info.money,MIN_MONEY_FOR_HACK),info.max_money);
     info.hack_pending = 0;
@@ -169,7 +190,6 @@ export async function installSPU(ns,info) {
     if(file == OPS_NAME) return
   }
   await ns.scp(OPS_NAME, info.host)
-  
   OPS_INSTALLED[info.host] = true;
   log(ns,`OPS software installed on ${info.host}`)
 }

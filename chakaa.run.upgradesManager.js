@@ -50,6 +50,7 @@ export async function main(ns) {
         let money = ns.getServerMoneyAvailable('home')
         for (const action of actions) {
 			try{
+				log(ns,`Runnin function ${action[0].name}`)
 				let ret = await action[0](ns, money*action[1]);
             	if(ret)break;
 			}catch(e){

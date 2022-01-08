@@ -1,4 +1,4 @@
-import { DELAY_BETWEEN_CHECKS,RESERVED_RAM } from './chakaa.lib.config.js';
+import { DELAY_BETWEEN_CHECKS,RESERVED_RAM,UNIS } from './chakaa.lib.config.js';
 import { info } from './chakaa.lib.functions.js';
 
 // Setup daemon for stuff that needs to be initialized on page load, and
@@ -9,10 +9,10 @@ import { info } from './chakaa.lib.functions.js';
 
 const daemons = [
   "chakaa.run.opsManager.js", //Start the OPS manager
-  "chakaa.run.upgradesManager.js", //Handle computer upgrades, only if we have singularity
   "chakaa.run.hacknetManager.js", // This isn't all that useful, but it is very inexpensive and will fit in the starting 32GB when the other two won't.
   "chakaa.run.serversManager.js", // Prefer increasing available processing power
   "chakaa.run.codingContractsManager.js", // Then solve the ccts
+  "chakaa.run.upgradesManager.js", //Handle computer upgrades, only if we have singularity
   "chakaa.run.wseManager.js", // Or play with the market
   //"chakaa.run.factionManager.js", // then work for factions
   //"chakaa.run.activityManager.js", // Or perform activities
@@ -22,6 +22,12 @@ const daemons = [
 /** @param {NS} ns **/
 export async function main(ns) {
   ns.disableLog("ALL");
+  while(ns.getPlayer().hacking<10){
+    ns.universityCourse(UNIS[ns.getPlayer().city][0],"Study Computer Science");
+    await ns.sleep(5000)
+  }
+  ns.stopAction();
+
   while (true) {
     for (const daemon of daemons) {
       let mem_total = ns.getServerMaxRam("home");

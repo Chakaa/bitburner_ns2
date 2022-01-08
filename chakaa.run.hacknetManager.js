@@ -72,7 +72,7 @@ end
 
 const actions = [
   //[spendHashes, 1.0],
-  [buyNewHacknet, 0.5],
+  [buyNewHacknet, 0.3],
   [upgradeHacknet, 0.1]
 ];
 
