@@ -72,8 +72,8 @@ end
 
 const actions = [
   //[spendHashes, 1.0],
-  [buyNewHacknet, 0.3],
-  [upgradeHacknet, 0.1]
+  [buyNewHacknet, 0.1],
+  [upgradeHacknet, 0.05]
 ];
 
 /** @param {NS} ns **/

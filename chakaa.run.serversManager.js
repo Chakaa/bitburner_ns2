@@ -21,7 +21,7 @@ export async function buyNewServer(ns,budget) {
 	let name = (`pserv-${nservers}`);
 	let cost = ns.getPurchasedServerCost(ram);
 
-	info(`Buying server ${name} (${ram}GB) for $${cost}`);
+	info(ns, `Buying server ${name} (${ram}GB) for $${cost}`);
 	ns.purchaseServer(name, ram)
 	return true;
 }
@@ -58,7 +58,7 @@ export async function upgradeServer(ns,budget) {
 }
 
 const actions = [
-  [buyNewServer, 0.1],
+  [buyNewServer, 0.3],
   [upgradeServer, 0.004]
 ];
 

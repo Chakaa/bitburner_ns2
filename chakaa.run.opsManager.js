@@ -182,15 +182,21 @@ export async function preTask(ns,info) {
   } else {TARGET_MONEY[host] = null;/*log(ns,`${info.host} not hackable ????`);*/}
 }
 
-let OPS_INSTALLED = {};
+// let OPS_INSTALLED = {};
+// export async function installSPU(ns,info) {
+//   if(OPS_INSTALLED[info.host]) return
+//   for (let i = 0; i < info.ls; i++) {
+//     let file = info.ls[i]
+//     if(file == OPS_NAME) return
+//   }
+//   await ns.scp(OPS_NAME, info.host)
+//   OPS_INSTALLED[info.host] = true;
+//   log(ns,`OPS software installed on ${info.host}`)
+// }
 export async function installSPU(ns,info) {
-  if(OPS_INSTALLED[info.host]) return
-  for (let i = 0; i < info.ls; i++) {
-    let file = info.ls[i]
-    if(file == OPS_NAME) return
-  }
+  if(ns.fileExists(OPS_NAME,info.host))
+    return
   await ns.scp(OPS_NAME, info.host)
-  OPS_INSTALLED[info.host] = true;
   log(ns,`OPS software installed on ${info.host}`)
 }
 
@@ -316,18 +322,18 @@ export async function assignTasks(ns,network, tasks){
 
   for (const [host,info] of Object.entries(network)) {
     if(info.threads<=0 || !task)continue;
-    log(ns,`Scheduling task [${task.action} ${task.host}] on ${host} (${info.threads}/${info.max_threads} threads)`)
+    //log(ns,`Scheduling task [${task.action} ${task.host}] on ${host} (${info.threads}/${info.max_threads} threads)`)
     while(task){
       if(info.threads <= 0)break; //next host
       if(task.pending >= task.threads){ //next task
         task = next_task();
         if(!task){
-          log(ns,`Ran out of tasks before running out of hosts! Even though there was ${tasks.length} tasks.`)
+          //log(ns,`Ran out of tasks before running out of hosts! Even though there was ${tasks.length} tasks.`)
           break; // ran out of tasks before running out of hosts!
         }
         if(task.action=="hack")TARGET_MONEY[task.host] = Math.min(TARGET_MONEY[task.host] * GROWTH_FACTOR, network[task.host].max_money);
       }else{
-        log(ns,`Scheduling task ${task.action} ${task.host} [${task.threads}]`)
+        //log(ns,`Scheduling task ${task.action} ${task.host} [${task.threads}]`)
         let threads = Math.min(task.threads - task.pending, info.threads)
         runOPS(ns, host, threads, task.action, task.host, task.time)
         task.pending = task.pending + threads
@@ -344,6 +350,6 @@ export async function assignTasks(ns,network, tasks){
 
 // run our OPS script
 export function runOPS(ns, host, threads, action, target, time){
-  log(ns, `OPS: ${host}[${threads}]: ${action} ${target}`);
+  //log(ns, `OPS: ${host}[${threads}]: ${action} ${target}`);
   ns.exec(OPS_NAME, host, threads, action, target, ns.getTimeSinceLastAug()/1000 + time)
 }

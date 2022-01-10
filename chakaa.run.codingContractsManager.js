@@ -95,35 +95,51 @@ export async function solveContract(ns,filename,hostname,pathTo) {
     }
     
     if(response=="")
-        ns.print("Solving "+filename+" on " + pathTo + "("+type+") : " + (response==""?"Contract Failed":response));
+        ns.tprint("Solving "+filename+" on " + pathTo + "("+type+") : " + (response==""?"Contract Failed":response));
 }
 
 //Contract type = "Find Largest Prime Factor":
 export async function largestPrimeFactor(ns,filename,hostname) {
     let cc = ns.codingcontract;
     let inputData = cc.getData(filename, hostname);
-    let answer = 1;
+    let answer = -1;
+    
+    // Print the number of 2s
+    // that divide inputData
+    while (inputData % 2 == 0) {
+        answer = 2;
 
-    const isPrime = (x) => {
-        if (x <= 1)
-            return false;
-        for(let i = 2; i <= x / 2; i++) {
-            if(x % i == 0) {
-                return false;
-            }
-        }
-        return true;
-    };
-
-    for(let i = 2; i <= inputData / 2; i++) {
-        // check if i is a factor of inputData
-        if(inputData % i == 0 && isPrime(i)==true && i>answer)
-            answer=i
+        // equivalent to inputData /= 2
+        inputData >>= 1;
     }
+    // inputData must be odd at this point
+    while (inputData % 3 == 0) {
+        answer = 3;
+        inputData = inputData / 3;
+    }
+
+    // now we have to iterate only for integers
+    // who does not have prime factor 2 and 3
+    for (let i = 5; i <= Math.sqrt(inputData); i += 6) {
+        while (inputData % i == 0) {
+            answer = i;
+            inputData = inputData / i;
+        }
+        while (inputData % (i + 2) == 0) {
+            answer = i + 2;
+            inputData = inputData / (i + 2);
+        }
+    }
+
+    // This condition is to handle the case
+    // when inputData is a prime number greater than 4
+    if (inputData > 4)
+        answer = inputData;
 
     //return "I do not know the solution here : "+filename+" on "+hostname+" (largestPrimeFactor)";
     return cc.attempt(answer,filename,hostname,{returnReward:true});
 }
+
 //Contract type = "Subarray with Maximum Sum":
 export async function subarrayMaxSum(ns,filename,hostname) {
     let cc = ns.codingcontract;

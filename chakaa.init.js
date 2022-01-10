@@ -22,7 +22,7 @@ const daemons = [
 /** @param {NS} ns **/
 export async function main(ns) {
   ns.disableLog("ALL");
-  while(ns.getPlayer().hacking<10){
+  while(ns.getPlayer().hacking<20){
     ns.universityCourse(UNIS[ns.getPlayer().city][0],"Study Computer Science");
     await ns.sleep(5000)
   }

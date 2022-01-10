@@ -9,6 +9,10 @@ export function buyTor(ns,budget) {
 	return true;
 }
 
+export function unlockWse(ns,budget) {
+	return false;
+}
+
 export function buySpikes(ns,budget) {
     for (const program of SPIKES) {
 		if(!ns.fileExists(program) && ns.purchaseProgram(program))return true;
