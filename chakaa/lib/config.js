@@ -26,7 +26,10 @@ export const OPS_NAME = "chakaa.bin.opScript.js"; // OPS Script name
 export const OPS_RAM = 2.05; // OPS Script RAM (need to find a way to calculate it, rather than hardcoded)
 export const BKD_NAME = "chakaa.bin.installBackdoor.js"; // OPS Script name
 export const BKD_RAM = 3.60; // OPS Script RAM (need to find a way to calculate it, rather than hardcoded)
-export const G_NAME = "chakaa/bin/grow.js"; // OPS Script name
+export const G_NAME = "/chakaa/bin/grow.js"; // Grow Script name
+export const H_NAME = "/chakaa/bin/hack.js"; // Grow Script name
+export const W_NAME = "/chakaa/bin/weaken.js"; // Grow Script name
+export const OP_RAM = 1.80; // Grow Script RAM
 
 //Init config
 export const DELAY_BETWEEN_CHECKS = 60; // seconds
