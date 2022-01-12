@@ -140,30 +140,18 @@ export function isHackable(ns,info) {
   return info.root && info.max_money > 0 && info.hack_level <= ns.getHackingLevel()
 }
 // check if host is backdoorable
-export function isBackdoorable(ns,info) {
-  return info.root && !info.host.includes("pserv") && info.hack_level <= ns.getHackingLevel() && !ns.getServer(info.host).backdoorInstalled;
-}
+// export function isBackdoorable(ns,info) {
+//   return info.root && !info.host.includes("pserv") && info.hack_level <= ns.getHackingLevel() && !ns.getServer(info.host).backdoorInstalled;
+// }
 
 // Generate "pre-task" information about how much we want to weaken/hack/grow this host and how much money we want it to have.
 export async function preTask(ns,info) {
   let host = info.host
-  if(isBackdoorable(ns,info)){
-    /*
-    // let t = Math.max(0,Math.floor((info.ram - info.ram_used)/BKD_RAM));
-    let t = 1;
-    if(t>0 && !ns.isRunning(BKD_NAME, host)){
-      log(ns,`Gonna BKD ${host} with ${t} threads`);
-      ns.tprint(`Gonna BKD ${host} with ${t} threads`);
-      if(ns.fileExists(BKD_NAME, host)){
-        ns.rm(BKD_NAME, host);
-      }
-      await ns.scp(BKD_NAME,"home", host);
-      await ns.exec(BKD_NAME,host,t);
-    }*/
-    try{
-      await manualBackdoor(ns,host);
-    }catch(e){ }
-  }
+  // if(isBackdoorable(ns,info)){
+  //   try{
+  //     await manualBackdoor(ns,host);
+  //   }catch(e){ }
+  // }
   if(isHackable(ns,info)){
     TARGET_MONEY[host] = TARGET_MONEY[host] || Math.min(Math.max(info.money,MIN_MONEY_FOR_HACK),info.max_money);
     info.hack_pending = 0;

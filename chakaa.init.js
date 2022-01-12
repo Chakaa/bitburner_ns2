@@ -9,10 +9,12 @@ import { info } from './chakaa.lib.functions.js';
 
 const daemons = [
   "chakaa.run.opsManager.js", //Start the OPS manager
-  "chakaa.run.hacknetManager.js", // This isn't all that useful, but it is very inexpensive and will fit in the starting 32GB when the other two won't.
+  "chakaa.run.ramManager.js", //prioritize ram acquisition
   "chakaa.run.serversManager.js", // Prefer increasing available processing power
+  "chakaa.run.hacknetManager.js", // This isn't all that useful, but it is very inexpensive and will fit in the starting 32GB when the other two won't.
+  "chakaa.run.backdooring.js", //Backdoor everything
+  "chakaa.run.programManager", //Handle program buying and creation
   "chakaa.run.codingContractsManager.js", // Then solve the ccts
-  "chakaa.run.upgradesManager.js", //Handle computer upgrades, only if we have singularity
   "chakaa.run.wseManager.js", // Or play with the market
   //"chakaa.run.factionManager.js", // then work for factions
   //"chakaa.run.activityManager.js", // Or perform activities
