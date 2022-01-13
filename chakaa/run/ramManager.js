@@ -1,6 +1,6 @@
 //Do handle any additional server stuff
-import { MAX_RAM,UPGRADES_TIME_BETWEEN_BUYS } from './chakaa.lib.config.js';
-import { info, log, debug, error } from './chakaa.lib.functions.js';
+import { MAX_RAM,UPGRADES_TIME_BETWEEN_BUYS } from 'chakaa/lib/config.js';
+import { info, log, debug, error } from 'chakaa/lib/functions.js';
 
 export function buyRam(ns,budget) {
 	if(ns.getServerMaxRam('home')>=MAX_RAM){

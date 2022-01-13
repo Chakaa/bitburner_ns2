@@ -9,21 +9,21 @@ import { info } from 'chakaa/lib/functions.js';
 
 const daemons = [
   "chakaa/run/opsManager.js", //Start the OPS manager
-  // "/run/ramManager.js", //prioritize ram acquisition
-  // "/run/serversManager.js", // Prefer increasing available processing power
-  // "/run/hacknetManager.js", // This isn't all that useful, but it is very inexpensive and will fit in the starting 32GB when the other two won't.
-  // "/run/backdooring.js", //Backdoor everything
-  // "/run/programManager", //Handle program buying and creation
-  // "/run/codingContractsManager.js", // Then solve the ccts
-  // "/run/wseManager.js", // Or play with the market
-  //"/run/factionManager.js", // then work for factions
-  //"/run/activityManager.js", // Or perform activities
-  //"/run/gangsManager.js", // Or manage gangs
+  "chakaa/run/ramManager.js", //prioritize ram acquisition
+  "chakaa/run/serversManager.js", // Prefer increasing available processing power
+  "chakaa/run/hacknetManager.js", // This isn't all that useful, but it is very inexpensive and will fit in the starting 32GB when the other two won't.
+  "chakaa/run/backdooring.js", //Backdoor everything
+  "chakaa/run/programManager.js", //Handle program buying and creation
+  "chakaa/run/codingContractsManager.js", // Then solve the ccts
+  "chakaa/run/wseManager.js", // Or play with the market
+  // "chakaa/run/factionManager.js", // then work for factions
+  // "chakaa/run/activityManager.js", // Or perform activities
+  // "chakaa/run/gangsManager.js", // Or manage gangs
 ];
 
 /** @param {NS} ns **/
 export async function main(ns) {
-  //ns.disableLog("ALL");
+  ns.disableLog("ALL");
   while(ns.getPlayer().hacking<20){
     ns.universityCourse(UNIS[ns.getPlayer().city][0],"Study Computer Science");
     await ns.sleep(5000)

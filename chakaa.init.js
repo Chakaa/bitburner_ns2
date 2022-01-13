@@ -13,7 +13,7 @@ const daemons = [
   "chakaa.run.serversManager.js", // Prefer increasing available processing power
   "chakaa.run.hacknetManager.js", // This isn't all that useful, but it is very inexpensive and will fit in the starting 32GB when the other two won't.
   "chakaa.run.backdooring.js", //Backdoor everything
-  "chakaa.run.programManager", //Handle program buying and creation
+  "chakaa.run.programManager.js", //Handle program buying and creation
   "chakaa.run.codingContractsManager.js", // Then solve the ccts
   "chakaa.run.wseManager.js", // Or play with the market
   //"chakaa.run.factionManager.js", // then work for factions
