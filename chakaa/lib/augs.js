@@ -2,128 +2,138 @@
  * Script for handling augs stuff
  */
 
- export const type_priorities = {
-  hacknet: 0,
-  hack: 1,
-  ['social/corp']: 0,
-  social: 1,
-  combat: 2,
-  bladeburner: 0,
-  special: 1,
+export const prios = {
+  "hacknet": 1,
+  "hack": 2,
+  "sociacorp": 1,
+  "useless": -1,
+  "social": 1,
+  "combat": 0,
+  "bladeburner": 1,
+  "special": 3,
+  "superspecial": 5,
+}
+export const sub_prios = {
+  "truc": 1
 }
 
-export const augs = [
-  [
-     {type:'hacknet', tpriority:4, name:"Hacknet Node CPU Architecture Neural-Upload", priority:0}
-    ,{type:'hacknet', tpriority:4, name:"Hacknet Node Cache Architecture Neural-Upload", priority:0}
-    ,{type:'hacknet', tpriority:4, name:"Hacknet Node NIC Architecture Neural-Upload", priority:0}
-    ,{type:'hacknet', tpriority:4, name:"Hacknet Node Kernel Architecture Neural-Upload", priority:0}
-    ,{type:'hacknet', tpriority:4, name:"Hacknet Node Core Architecture Neural-Upload", priority:0}
+export const augs = {
+  "Hacknet Node CPU Architecture Neural-Upload": {type:'hacknet', stype:"truc"}
+  ,"Hacknet Node Cache Architecture Neural-Upload": {type:'hacknet', stype:"truc"}
+  ,"Hacknet Node NIC Architecture Neural-Upload": {type:'hacknet', stype:"truc"}
+  ,"Hacknet Node Kernel Architecture Neural-Upload": {type:'hacknet', stype:"truc"}
+  ,"Hacknet Node Core Architecture Neural-Upload": {type:'hacknet', stype:"truc"}
+  ,"Hacknet Node Kernel Direct-Neural Interface": {type:'hacknet', stype:"truc"}
+  ,"Hacknet Node Core Direct-Neural Interface": {type:'hacknet', stype:"truc"}
 
-    ,{type:'hack', tpriority:1, name:"BitRunners Neurolink", priority:10}
-    ,{type:'hack', tpriority:1, name:"CashRoot Starter Kit", priority:10}
-    ,{type:'hack', tpriority:1, name:"Neuralstimulator", priority:0}
-    ,{type:'hack', tpriority:1, name:"CRTX42-AA Gene Modification", priority:1}
-    ,{type:'hack', tpriority:1, name:"Neuregen Gene Modification", priority:2}
-    ,{type:'hack', tpriority:1, name:"BitWire", priority:1}
-    ,{type:'hack', tpriority:1, name:"Artificial Bio-neural Network Implant", priority:1}
-    ,{type:'hack', tpriority:1, name:"Artificial Synaptic Potentiation", priority:1}
-    ,{type:'hack', tpriority:1, name:"Enhanced Myelin Sheathing", priority:1}
-    ,{type:'hack', tpriority:1, name:"Synaptic Enhancement Implant", priority:1}
-    ,{type:'hack', tpriority:1, name:"Neural-Retention Enhancement", priority:1}
-    ,{type:'hack', tpriority:1, name:"DataJack", priority:1}
-    ,{type:'hack', tpriority:1, name:"Embedded Netburner Module", priority:1}
-    ,{type:'hack', tpriority:1, name:"Embedded Netburner Module Core Implant", priority:1}
-    ,{type:'hack', tpriority:1, name:"Embedded Netburner Module Core V2 Upgrade", priority:1}
-    ,{type:'hack', tpriority:1, name:"Embedded Netburner Module Core V3 Upgrade", priority:1}
-    ,{type:'hack', tpriority:1, name:"Embedded Netburner Module Analyze Engine", priority:1}
-    ,{type:'hack', tpriority:1, name:"Embedded Netburner Module Direct Memory Access Upgrade", priority:1}
-    ,{type:'hack', tpriority:1, name:"Neural Accelerator", priority:1}
-    ,{type:'hack', tpriority:1, name:"Cranial Signal Processors - Gen I", priority:1}
-    ,{type:'hack', tpriority:1, name:"Cranial Signal Processors - Gen II", priority:1}
-    ,{type:'hack', tpriority:1, name:"Cranial Signal Processors - Gen III", priority:1}
-    ,{type:'hack', tpriority:1, name:"Cranial Signal Processors - Gen IV", priority:1}
-    ,{type:'hack', tpriority:1, name:"Cranial Signal Processors - Gen V", priority:1}
-    ,{type:'hack', tpriority:1, name:"Neuronal Densification", priority:1}
-    ,{type:'hack', tpriority:1, name:"PC Direct-Neural Interface", priority:1}
-    ,{type:'hack', tpriority:1, name:"PC Direct-Neural Interface Optimization Submodule", priority:1}
-    ,{type:'hack', tpriority:1, name:"PC Direct-Neural Interface NeuroNet Injector", priority:1}
-    ,{type:'hack', tpriority:1, name:"HyperSight Corneal Implant", priority:1}
-    ,{type:'hack', tpriority:1, name:"QLink", priority:1}
-    ,{type:'hack', tpriority:1, name:"OmniTek InfoLoad", priority:1}
-    ,{type:'hack', tpriority:1, name:"The Black Hand", priority:1}
+  ,"BitRunners Neurolink": {type:'superspecial', stype:"truc"}
+  ,"CashRoot Starter Kit": {type:'superspecial', stype:"truc"}
+  ,"PCMatrix": {type:'superspecial', stype:"truc" }
+  ,"Neuralstimulator": {type:'hack', stype:"truc"}
+  ,"CRTX42-AA Gene Modification": {type:'hack', stype:"truc"}
+  ,"Neuregen Gene Modification": {type:'hack', stype:"truc"}
+  ,"BitWire": {type:'hack', stype:"truc"}
+  ,"Artificial Bio-neural Network Implant": {type:'hack', stype:"truc"}
+  ,"Artificial Synaptic Potentiation": {type:'hack', stype:"truc"}
+  ,"Enhanced Myelin Sheathing": {type:'hack', stype:"truc"}
+  ,"Synaptic Enhancement Implant": {type:'hack', stype:"truc"}
+  ,"Neural-Retention Enhancement": {type:'hack', stype:"truc"}
+  ,"DataJack": {type:'hack', stype:"truc"}
+  ,"Embedded Netburner Module": {type:'hack', stype:"truc"}
+  ,"Embedded Netburner Module Core Implant": {type:'hack', stype:"truc"}
+  ,"Embedded Netburner Module Core V2 Upgrade": {type:'hack', stype:"truc"}
+  ,"Embedded Netburner Module Core V3 Upgrade": {type:'hack', stype:"truc"}
+  ,"Embedded Netburner Module Analyze Engine": {type:'hack', stype:"truc"}
+  ,"Embedded Netburner Module Direct Memory Access Upgrade": {type:'hack', stype:"truc"}
+  ,"Neural Accelerator": {type:'hack', stype:"truc"}
+  ,"Cranial Signal Processors - Gen I": {type:'hack', stype:"truc"}
+  ,"Cranial Signal Processors - Gen II": {type:'hack', stype:"truc"}
+  ,"Cranial Signal Processors - Gen III": {type:'hack', stype:"truc"}
+  ,"Cranial Signal Processors - Gen IV": {type:'hack', stype:"truc"}
+  ,"Cranial Signal Processors - Gen V": {type:'hack', stype:"truc"}
+  ,"Neuronal Densification": {type:'hack', stype:"truc"}
+  ,"PC Direct-Neural Interface": {type:'hack', stype:"truc"}
+  ,"PC Direct-Neural Interface Optimization Submodule": {type:'hack', stype:"truc"}
+  ,"PC Direct-Neural Interface NeuroNet Injector": {type:'hack', stype:"truc"}
+  ,"HyperSight Corneal Implant": {type:'hack', stype:"truc"}
+  ,"QLink": {type:'hack', stype:"truc"}
+  ,"OmniTek InfoLoad": {type:'hack', stype:"truc"}
+  ,"The Black Hand": {type:'hack', stype:"truc"}
 
-    ,{type:'social/corp', tpriority:1, name:"Enhanced Social Interaction Implant", priority:0}
-    ,{type:'social/corp', tpriority:1, name:"Speech Processor Implant", priority:0}
-    ,{type:'social/corp', tpriority:1, name:"TITN-41 Gene-Modification Injection", priority:0}
-    ,{type:'social/corp', tpriority:1, name:"Nuoptimal Nootropic Injector Implant", priority:0}
-    ,{type:'social/corp', tpriority:1, name:"Speech Enhancement", priority:0}
-    ,{type:'social/corp', tpriority:1, name:"FocusWire", priority:0}
-    
-    ,{type:'social', tpriority:1, name:"ADR-V1 Pheromone Gene", priority:1}
-    ,{type:'social', tpriority:1, name:"ADR-V2 Pheromone Gene", priority:1}
-    ,{type:'social', tpriority:1, name:"SmartJaw", priority:1}
-    ,{type:'social', tpriority:1, name:"Social Negotiation Assistant (S.N.A)", priority:1}
-    ,{type:'social', tpriority:1, name:"The Shadow's Simulacrum", priority:1}
+  ,"Enhanced Social Interaction Implant": {type:'sociacorp', stype:"truc"}
+  ,"Speech Processor Implant": {type:'sociacorp', stype:"truc"}
+  ,"TITN-41 Gene-Modification Injection": {type:'sociacorp', stype:"truc"}
+  ,"Nuoptimal Nootropic Injector Implant": {type:'sociacorp', stype:"truc"}
+  ,"Speech Enhancement": {type:'sociacorp', stype:"truc"}
+  ,"FocusWire": {type:'sociacorp', stype:"truc"}
 
-    ,{type:'combat', tpriority:-1, name:"Augmented Targeting I", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Augmented Targeting II", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Augmented Targeting III", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Synthetic Heart", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Synfibril Muscle", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Combat Rib I", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Combat Rib II", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Combat Rib III", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Nanofiber Weave", priority:2}
-    ,{type:'combat', tpriority:-1, name:"NEMEAN Subdermal Weave", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Wired Reflexes", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Graphene Bone Lacings", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Bionic Spine", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Bionic Arms", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Graphene Bionic Spine Upgrade", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Bionic Legs", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Graphene Bionic Legs Upgrade", priority:2}
-    ,{type:'combat', tpriority:-1, name:"LuminCloaking-V1 Skin Implant", priority:2}
-    ,{type:'combat', tpriority:-1, name:"LuminCloaking-V2 Skin Implant", priority:2}
-    ,{type:'combat', tpriority:-1, name:"HemoRecirculator", priority:2}
-    ,{type:'combat', tpriority:-1, name:"SmartSonar Implant", priority:2}
-    ,{type:'combat', tpriority:-1, name:"CordiARC Fusion Reactor", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Neotra", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Photosynthetic Cells", priority:2}
-    ,{type:'combat', tpriority:-1, name:"NutriGen Implant", priority:2}
-    ,{type:'combat', tpriority:-1, name:"INFRARET Enhancement", priority:2}
-    ,{type:'combat', tpriority:-1, name:"DermaForce Particle Barrier", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Graphene BranchiBlades Upgrade", priority:2}
-    ,{type:'combat', tpriority:-1, name:"Graphene Bionic Arms Upgrade", priority:2}
-    ,{type:'combat', tpriority:-1, name:"BrachiBlades", priority:2}
-    
-    ,{type:'bladeburner', tpriority:0, name:"EsperTech Bladeburner Eyewear", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"EMS-4 Recombination", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"ORION-MKIV Shoulder", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"Hyperion Plasma Cannon V1", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"Hyperion Plasma Cannon V2", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"GOLEM Serum", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"Vangelis Virus", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"Vangelis Virus 3.0", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"I.N.T.E.R.L.I.N.K.E.D", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"Blade's Runners", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"BLADE-51b Tesla Armor", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"BLADE-51b Tesla Armor: Power Cells Upgrade", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"BLADE-51b Tesla Armor: Energy Shielding Upgrade", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"BLADE-51b Tesla Armor: Unibeam Upgrade", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"BLADE-51b Tesla Armor: Omnibeam Upgrade", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"BLADE-51b Tesla Armor: IPU Upgrade", priority:0}
-    ,{type:'bladeburner', tpriority:0, name:"The Blade's Simulacrum", priority:0}
-    
-    ,{type:'special', tpriority:1, name:"NeuroFlux Governor", priority:-999 } // special cased in autofaction
-    ,{type:'special', tpriority:1, name:"The Red Pill", priority:10 }
-    ,{type:'special', tpriority:1, name:"Neurotrainer I", priority:1}
-    ,{type:'special', tpriority:1, name:"Neurotrainer II", priority:1}
-    ,{type:'special', tpriority:1, name:"Neurotrainer III", priority:1}
-    ,{type:'special', tpriority:1, name:"Power Recirculation Core", priority:1}
-    ,{type:'special', tpriority:1, name:"SPTN-97 Gene Modification", priority:1}
-    ,{type:'special', tpriority:1, name:"ECorp HVMind Implant", priority:1}
-    ,{type:'special', tpriority:1, name:"Xanipher", priority:1}
-    ,{type:'special', tpriority:1, name:"nextSENS Gene Modification", priority:1}
-  ]
-]
+  ,"ADR-V1 Pheromone Gene": {type:'social',stype:"truc"}
+  ,"ADR-V2 Pheromone Gene": {type:'social',stype:"truc"}
+  ,"SmartJaw": {type:'social', stype:"truc"}
+  ,"Social Negotiation Assistant (S.N.A)": {type:'social', stype:"truc"}
+  ,"The Shadow's Simulacrum": {type:'social', stype:"truc"}
+
+  ,"Augmented Targeting I": {type:'combat', stype:"truc"}
+  ,"Augmented Targeting II": {type:'combat', stype:"truc"}
+  ,"Augmented Targeting III": {type:'combat', stype:"truc"}
+  ,"Synthetic Heart": {type:'combat', stype:"truc"}
+  ,"Synfibril Muscle": {type:'combat', stype:"truc"}
+  ,"Combat Rib I": {type:'combat', stype:"truc"}
+  ,"Combat Rib II": {type:'combat', stype:"truc"}
+  ,"Combat Rib III": {type:'combat', stype:"truc"}
+  ,"Nanofiber Weave": {type:'combat', stype:"truc"}
+  ,"NEMEAN Subdermal Weave": {type:'combat', stype:"truc"}
+  ,"Wired Reflexes": {type:'combat', stype:"truc"}
+  ,"Graphene Bone Lacings": {type:'combat', stype:"truc"}
+  ,"Bionic Spine": {type:'combat', stype:"truc"}
+  ,"Bionic Arms": {type:'combat', stype:"truc"}
+  ,"Graphene Bionic Spine Upgrade": {type:'combat', stype:"truc"}
+  ,"Bionic Legs": {type:'combat', stype:"truc"}
+  ,"Graphene Bionic Legs Upgrade": {type:'combat', stype:"truc"}
+  ,"LuminCloaking-V1 Skin Implant": {type:'combat', stype:"truc"}
+  ,"LuminCloaking-V2 Skin Implant": {type:'combat', stype:"truc"}
+  ,"HemoRecirculator": {type:'combat', stype:"truc"}
+  ,"SmartSonar Implant": {type:'combat', stype:"truc"}
+  ,"CordiARC Fusion Reactor": {type:'combat', stype:"truc"}
+  ,"Neotra": {type:'combat', stype:"truc"}
+  ,"Photosynthetic Cells": {type:'combat', stype:"truc"}
+  ,"NutriGen Implant": {type:'combat', stype:"truc"}
+  ,"INFRARET Enhancement": {type:'combat', stype:"truc"}
+  ,"DermaForce Particle Barrier": {type:'combat', stype:"truc"}
+  ,"Graphene BranchiBlades Upgrade": {type:'combat', stype:"truc"}
+  ,"Graphene Bionic Arms Upgrade": {type:'combat', stype:"truc"}
+  ,"BrachiBlades": {type:'combat', stype:"truc"}
+  ,"Hydroflame Left Arm": {type:'special', stype:"truc"} //Je sais pas ce que c'est -----A VERIFIER-----
+  ,"Unstable Circadian Modulator": {type:'special', stype:"truc"} //Je sais pas ce que c'est -----A VERIFIER-----
+  ,"Graphene BrachiBlades Upgrade": {type:'special', stype:"truc"} //Je sais pas ce que c'est -----A VERIFIER-----
+
+  ,"EsperTech Bladeburner Eyewear": {type:'bladeburner', stype:"truc"}
+  ,"EMS-4 Recombination": {type:'bladeburner', stype:"truc"}
+  ,"ORION-MKIV Shoulder": {type:'bladeburner', stype:"truc"}
+  ,"Hyperion Plasma Cannon V1": {type:'bladeburner', stype:"truc"}
+  ,"Hyperion Plasma Cannon V2": {type:'bladeburner', stype:"truc"}
+  ,"GOLEM Serum": {type:'bladeburner', stype:"truc"}
+  ,"Vangelis Virus": {type:'bladeburner', stype:"truc"}
+  ,"Vangelis Virus 3.0": {type:'bladeburner', stype:"truc"}
+  ,"I.N.T.E.R.L.I.N.K.E.D": {type:'bladeburner', stype:"truc"}
+  ,"Blade's Runners": {type:'bladeburner', stype:"truc"}
+  ,"BLADE-51b Tesla Armor": {type:'bladeburner', stype:"truc"}
+  ,"BLADE-51b Tesla Armor: Power Cells Upgrade": {type:'bladeburner', stype:"truc"}
+  ,"BLADE-51b Tesla Armor: Energy Shielding Upgrade": {type:'bladeburner', stype:"truc"}
+  ,"BLADE-51b Tesla Armor: Unibeam Upgrade": {type:'bladeburner', stype:"truc"}
+  ,"BLADE-51b Tesla Armor: Omnibeam Upgrade": {type:'bladeburner', stype:"truc"}
+  ,"BLADE-51b Tesla Armor: IPU Upgrade": {type:'bladeburner', stype:"truc"}
+  ,"The Blade's Simulacrum": {type:'bladeburner', stype:"truc"}
+
+  ,"NeuroFlux Governor": {type:'useless', stype:"truc"} // special cased in autofaction
+  ,"The Red Pill": {type:'superspecial', stype:"truc"} //Prio because helps with the story
+  ,"Neuroreceptor Management Implant": {type:'special', stype:"truc"} //Prio because helps multi-tasking
+  ,"Neurotrainer I": {type:'special', stype:"truc"}
+  ,"Neurotrainer II": {type:'special', stype:"truc"}
+  ,"Neurotrainer III": {type:'special', stype:"truc"}
+  ,"Power Recirculation Core": {type:'special', stype:"truc"}
+  ,"SPTN-97 Gene Modification": {type:'special', stype:"truc"}
+  ,"ECorp HVMind Implant": {type:'special', stype:"truc"}
+  ,"Xanipher": {type:'special', stype:"truc"}
+  ,"nextSENS Gene Modification": {type:'special', stype:"truc"}
+}

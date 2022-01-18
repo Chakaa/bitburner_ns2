@@ -129,17 +129,6 @@ const buildStock = (ns, symbol) => ({
   volatility: ns.stock.getVolatility(symbol),
   forecast: ns.stock.getForecast(symbol),
 });
-/*
-Selling all stocks that aren't the current best.
-Selling 4794 shares of OMN at $12.65k, for a return of 
-Selling 483 shares of GPH at $26.49k, for a return of 
-Purchasing 40383 shares of MGCP at a total of $1.45b.
-Purchasing 11355 shares of APHE at a total of $70.92m.
-Purchasing 2817 shares of CTYS at a total of $2.74m.
-Purchasing 1 shares of UNV at a total of $118.20k.
-
-*/
-
 
 const sellPositions = (ns, stocks, isSimulated) => {
   for (const {
@@ -170,7 +159,7 @@ export async function main(ns) {
   const maxIterations = Number.POSITIVE_INFINITY;
   let iteration = 0;
 
-  ns.tprint(`Running in simulation mode: ${isSimulated ? 'YES' : 'NO'}`);
+  ns.print(`Running in simulation mode: ${isSimulated ? 'YES' : 'NO'}`);
   //ns.stock.purchase4SMarketDataTixApi()
   while(!ns.getPlayer().has4SDataTixApi){
     await ns.sleep(60000);

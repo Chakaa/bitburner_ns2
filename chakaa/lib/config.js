@@ -41,7 +41,8 @@ export const HACKNET_TIME_BETWEEN_BUYS = 5000.0 // Time to wait between checks.
 
 //Servers config
 export const RAM_MIN = 8 // Smallest server we can buy
-export const RAM_MAX = 2^20 // Biggest server we can buy
+//export const RAM_MAX = 2^20 // Biggest server we can buy
+export const RAM_MAX = 1024 // Biggest server we can buy
 export const SERVER_TIME_BETWEEN_BUYS = 5000.0 // Time to wait between checks.
 
 //Upgrades config
@@ -53,4 +54,10 @@ export const UPGRADES_TIME_BETWEEN_BUYS = 5000.0 // Time to wait between checks.
 
 //Faction config
 export const FACTION_WORK_LOOP_CHECK = 60000;
-export const WORK_ORDER = ["hacking","hacking contracts","hackingcontracts","field","fieldwork","field work","security","securitywork","security work"]
+export const WORK_ORDER = ["hacking","hacking contracts","hackingcontracts","field","fieldwork","field work","security","securitywork","security work"];
+export const AUGM_MIN_RESET = 6; //Min number of bought augments before resetting
+export const START_SCRIPT = "/chakaa/init.js" //Starting script after reset
+
+//acceptFactions config
+export const ACCEPT_FACTION_LOOP_CHECK = 5*1000;
+export const FACTION_INVITE_EXCLUSION = ["Sector-12","Chongqing","New Tokyo","Ishima","Aevum","Volhaven"];

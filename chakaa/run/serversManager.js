@@ -4,7 +4,7 @@ import { info, log, debug, error, toMoney } from 'chakaa/lib/functions.js';
 
 export function sizeServerToMoney(ns,budget) {
   let ram = RAM_MIN/2;
-  while(ns.getPurchasedServerCost(ram*2) <= budget){
+  while(ns.getPurchasedServerCost(ram*2) <= budget && ram*2<=RAM_MAX){
 	  ram = ram*2
   }
   return ram;

@@ -88,6 +88,21 @@ export function haveMoney(ns,amount){
     return ns.getServerMoneyAvailable('home') > amount;
   }
 }
+export function haveHacknetLvls(ns,limit){
+  return function(){
+	return [...Array(ns.hacknet.numNodes()).keys()].reduce( (a, b) => a + ns.hacknet.getNodeStats(b).level, 0 )>=limit;
+  }
+}
+export function haveHacknetRam(ns,limit){
+  return function(){
+	return [...Array(ns.hacknet.numNodes()).keys()].reduce( (a, b) => a + ns.hacknet.getNodeStats(b).ram, 0 )>=limit;
+  }
+}
+export function haveHacknetCores(ns,limit){
+  return function(){
+	return [...Array(ns.hacknet.numNodes()).keys()].reduce( (a, b) => a + ns.hacknet.getNodeStats(b).cores, 0 )>=limit;
+  }
+}
 export async function waitUntil(ns,p,delay=60000){
   while(!p()){
     await ns.sleep(delay);

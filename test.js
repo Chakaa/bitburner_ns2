@@ -262,18 +262,104 @@ function checkInstallation(ns){
   }
 }
 
+function buyableAugs(ns){
+  let item = {};
+
+  for (const [key, value] of Object.entries(factionNames)) {
+    for (const aug of ns.getAugmentationsFromFaction(key)) {
+      if(isAugBuyable(ns,key,aug) && !item.hasOwnProperty(aug))
+        item[aug] = key;
+    }
+  }
+  return Object.entries(item).length;
+}
+
+function isAugBuyable(ns,faction,aug){
+  if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) <= ns.getFactionRep(faction) && ns.getAugmentationPrice(aug) <= ns.getServerMoneyAvailable('home') && prios[augs[aug].type]>=0 ){
+    return true;
+  }
+  return false;
+}
+
+function getAugOrderedList(ns){
+  let faction_augs = []
+  for (const [key, value] of Object.entries(factionNames)) {
+    for (const aug of ns.getAugmentationsFromFaction(key)) {
+      if(!augs.hasOwnProperty(aug)){
+        info(ns, `Unkown augmentation "${aug}" from faction ${key}.`);
+        continue;
+      }
+      faction_augs.push( {faction:key, name:aug, rep:ns.getAugmentationRepReq(aug), price: ns.getAugmentationPrice(aug), prio:prios[augs[aug].type], have:haveAug(ns, aug), r:getAugmentationScore(ns,key,aug)} );
+    }
+  }
+  faction_augs.sort((a,b) => {
+    // Sort by ratio asc
+    if (a.r > b.r) return -1;
+    if (a.r < b.r) return 1;
+
+    // Sort by price asc
+    if (a.price > b.price) return -1;
+    if (a.price < b.price) return 1;
+
+    // Sort by prio desc
+    if (a.prio > b.prio) return 1;
+    if (a.prio < b.prio) return -1;
+  });
+  return faction_augs;
+}
+function nbAugmentsBuyable(ns){
+  let out = 0;
+  for (const aug of getAugOrderedList(ns)) {
+    out += isAugBuyable(ns,aug.faction,aug.name)?1:0;
+  }
+  return out;
+}
+function bestUnbuyableAugment(ns){
+  let out = 0;
+  for (const aug of getAugOrderedList(ns)) {
+    out += isAugBuyable(ns,aug.faction,aug.name)?1:0;
+  }
+  return out;
+}
+function shouldIInstall(ns){
+  return (ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)+nbAugmentsBuyable(ns)>AUGM_MIN_RESET;
+}
+
 /** @param {NS} ns **/
 export async function main(ns) {
-  factionsList = getFactions(ns);
-  ns.disableLog("ALL");
-  while(true){
-    try{
-      await choose_target(ns);
-      checkInstallation(ns);
-    }catch(e){
-      error(ns, e);
-      continue;
-    }
-    await ns.sleep(FACTION_WORK_LOOP_CHECK);
-  }
+  // factionsList = getFactions(ns);
+  
+  // let faction_augs = [];
+  // let curr_money = ns.getServerMoneyAvailable('home');
+
+  // for (const [key, value] of Object.entries(factionNames)) {
+  //   let single_faction_augs = ns.getAugmentationsFromFaction(key);
+
+  //   for (const aug of single_faction_augs) {
+  //     if(!haveAug(ns, aug)){
+  //       let aug_rep = ns.getAugmentationRepReq(aug);
+  //       let aug_pri = ns.getAugmentationPrice(aug);
+  //       // debug(ns,`checking ${aug.name} on rep ${aug.rep} and price ${aug.price} from faction ${key}`)
+  //       if( aug_rep <= ns.getFactionRep(key) && aug_pri <= curr_money && prios[augs[aug].type]>=0){
+  //         faction_augs.push( {faction:key, name:aug, rep:aug_rep, price: aug_pri, prio:prios[augs[aug].type], r:getAugmentationScore(ns,key,aug)} );
+  //       }
+  //     }
+  //   }
+  // }
+
+  // faction_augs.sort((a,b) => {
+  //     // Sort by ratio asc
+  //     if (a.r > b.r) return -1;
+  //     if (a.r < b.r) return 1;
+
+  //     // Sort by price asc
+  //     if (a.price > b.price) return -1;
+  //     if (a.price < b.price) return 1;
+
+  //     // Sort by prio desc
+  //     if (a.prio > b.prio) return 1;
+  //     if (a.prio < b.prio) return -1;
+  //   });
+
+  ns.tprint(nbAugmentsBuyable(ns));
 }
