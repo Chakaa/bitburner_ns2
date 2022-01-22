@@ -11,6 +11,15 @@ export const factionNames = {
   ,"The Covenant":6,"Daedalus":6,"Illuminati":6
 }
 
+export const impossibleFactions = {
+  "Sector-12": ["Chongqing","New Tokyo","Ishima","Volhaven"]
+  ,"Aevum": ["Chongqing","New Tokyo","Ishima","Volhaven"]
+  ,"Chongqing": ["Sector-12","Aevum","Volhaven"]
+  ,"New Tokyo": ["Sector-12","Aevum","Volhaven"]
+  ,"Ishima": ["Sector-12","Aevum","Volhaven"]
+  ,"Volhaven": ["Sector-12","Aevum","Chongqing","New Tokyo","Ishima"]
+}
+
 function setFaction(name) {
   return function (init) {
     factionsList[name] = init

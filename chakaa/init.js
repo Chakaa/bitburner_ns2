@@ -16,8 +16,8 @@ const daemons = [
   "/chakaa/run/programManager.js", //Handle program buying and creation
   "/chakaa/run/codingContractsManager.js", // Then solve the ccts
   "/chakaa/run/wseManager.js", // Or play with the market
-  "/chakaa/run/autoAcceptFactions.js"
-  // "/chakaa/run/factionManager.js", // then work for factions
+  "/chakaa/run/autoAcceptFactions.js",
+  "/chakaa/run/factionManager.js", // then work for factions
   // "chakaa/run/activityManager.js", // Or perform activities
   // "chakaa/run/gangsManager.js", // Or manage gangs
 ];

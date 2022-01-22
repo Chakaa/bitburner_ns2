@@ -189,41 +189,44 @@ export async function spiralizeMatrix(ns,filename,hostname) {
     let inputData = cc.getData(filename, hostname);
     let answer = [];
 
+
+    let k = 0,m=inputData.length,l = 0,n=inputData[0].length,i;
     /*
-    let bounds = [0,0,0,0];
-    let way = [1,0]
-    let i=0
-    let j=0
-
-    while(1==1){
-        answer.push(inputData[j][i]);
-
-        if(i==0+bounds[3] && j==0+bounds[0]){
-            way=[1,0];
-            bounds[0]=bounds[0]+1;
-        }else if(i==inputData[0].length+bounds[1] && j==0+bounds[0]){
-            way=[0,1];
-            bounds[1]=bounds[1]+1;
-        }else if(i==inputData[0].length+bounds[1] && j==inputData.length+bounds[2]){
-            way=[-1,0];
-            bounds[2]=bounds[2]+1;
-        }else if(i==0+bounds[2] && j==inputData.length+bounds[3]){
-            way=[0,-1];
-            bounds[3]=bounds[3]+1;
-        }
-
-        i=i+way[0]
-        j=j+way[0]
-    }
+        k - starting row index
+        m - ending row index
+        l - starting column index
+        n - ending column index
+        i - iterator 
     */
-
-    while (inputData.length) {
-        answer.push(
-            ...inputData.shift(),
-            ...inputData.map(a => a.pop()),
-            ...(inputData.pop() || []).reverse(),
-            ...inputData.map(a => a.shift()).reverse()
-        );
+ 
+    while (k < m && l < n) {
+        // add the first row from the remaining rows
+        for (i = l; i < n; ++i) {
+            answer.push(inputData[k][i]);
+        }
+        k++;
+ 
+        // add the last column from the remaining columns
+        for (i = k; i < m; ++i) {
+            answer.push(inputData[i][n - 1]);
+        }
+        n--;
+ 
+        // add the last row from the remaining rows
+        if (k < m) {
+            for (i = n - 1; i >= l; --i) {
+                answer.push(inputData[m - 1][i]);
+            }
+            m--;
+        }
+ 
+        // add the first column from the remaining columns
+        if (l < n) {
+            for (i = m - 1; i >= k; --i) {
+                answer.push(inputData[i][l]);
+            }
+            l++;
+        }
     }
 
     //return "I do not know the solution here : "+filename+" on "+hostname+" (spiralizeMatrix)";
