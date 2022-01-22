@@ -175,3 +175,15 @@ export function fuzzyFindPath(ns, target, serverName, serverList, ignore, isFoun
 	}
 	return [serverList, false];
 }
+export function displayWorkAdv(ns,aug){
+	let f = aug.faction;
+	let r = aug.rep;
+	
+	let earned = ns.getPlayer().workRepGained + ns.getFactionRep(f);
+	let cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
+	let allowDonation = ns.getFactionFavor(f) >= ns.getFavorToDonate();
+  
+	ns.print(`Earned : ${earned}/${r}`);
+	if(allowDonation)
+	  ns.print(`Cost : ${ns.getServerMoneyAvailable('home')*.5}/${cost}`);
+}

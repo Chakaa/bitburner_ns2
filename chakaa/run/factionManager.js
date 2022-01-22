@@ -1,6 +1,6 @@
 //Do handle any faction stuff
 import { WORK_ORDER, FACTION_WORK_LOOP_CHECK, AUGM_MIN_RESET, START_SCRIPT } from '/chakaa/lib/config.js';
-import { info, log, debug, error } from '/chakaa/lib/functions.js';
+import { info, log, debug, error, displayWorkAdv } from '/chakaa/lib/functions.js';
 import { getFactions, factionNames, impossibleFactions } from '/chakaa/lib/factions.js';
 import { augs,prios,sub_prios } from '/chakaa/lib/augs.js';
 
@@ -113,9 +113,16 @@ function nbAugmentsBuyable(ns){
 }
 function bestUnbuyableAugment(ns){
   for (const aug of getAugOrderedList(ns)) {
-    if(isAugFarmable(ns,aug.faction,aug.name) && !isAugBuyable(ns,aug.faction,aug.name)  && ( inFaction(ns,aug.faction) || knowHow(aug.faction) ) && aug.r>0 ){
+    if(isAugFarmable(ns,aug.faction,aug.name) && !isAugBuyable(ns,aug.faction,aug.name)  && ( inFaction(ns,aug.faction) || knowHow(aug.faction) ) && (aug.r>0 || augs[aug.name].type.includes("special") ) ){
       return aug;
     }   
+  }
+  return null;
+}
+function bestUnbuyableAugmentNoRestriction(ns){
+  for (const aug of getAugOrderedList(ns)) {
+    if(!haveAug(ns, aug) && (ns.getAugmentationRepReq(aug.name) > ns.getFactionRep(aug.faction) || inFaction(ns,aug.faction)) && prios[augs[aug.name].type]>0)
+      return aug;
   }
   return null;
 }
@@ -123,25 +130,30 @@ function bestUnbuyableAugment(ns){
 async function farmMinReputFaction(ns){
   let rep = Infinity;
   let target = null;
-  for (const [key, value] of Object.entries(factionNames)) {
+  for (const key of ns.getPlayer().factions ) {
     let thisRep = ns.getFactionRep(key);
     if(thisRep<rep){
       rep=thisRep;
       target=key;
     }
   }
-  if(!target){
+  if(target){
     for (const WORKTYPE of WORK_ORDER) {
       if(ns.workForFaction(target, WORKTYPE))break;
     }
-    await ns.sleep(FACTION_WORK_LOOP_CHECK);
-    ns.stopAction();
+    // await ns.sleep(FACTION_WORK_LOOP_CHECK);
+    // ns.stopAction();
+  }else{
+    info(ns, `But did not find any least reputed faction (something wrong).`);
   }
 }
 
 async function manageFactions(ns){
   let nextAug = bestUnbuyableAugment(ns);
   if (!nextAug) {
+    let potentialNext = bestUnbuyableAugmentNoRestriction(ns);
+    info(ns, `You should target this aug next [${potentialNext.faction} / ${potentialNext.name} / R:${potentialNext.rep} - $${potentialNext.price}].`);
+    //info(ns, `Dont have any aug to farm, just going to the least reput faction.`);
     await farmMinReputFaction(ns);
   }else{
     info(ns, `Next aug farmed should be [${nextAug.faction}-${nextAug.name}-R:${nextAug.rep}-$${nextAug.price}].`);
@@ -162,35 +174,36 @@ async function join_faction(ns, aug){
     await factionsList[targetFaction](ns);
     ns.joinFaction(targetFaction);
   }
-  return await assess(ns,aug);
+  return await reachAugRep(ns,aug);
 }
 
-// Assess the state of the faction. Determine whether we need to grind rep up
-// to 'rep', or up to the favour point (and then reset), or whether we can just
-// donate for rep.
-async function assess(ns,aug, rep){
-  if(ns.getFactionRep(aug.faction) >= rep){
-    log(ns, `Rep requirement already met.`);
-    return true;
-  // } else if(ns.getFactionFavor(target) >= ns.getFavorToDonate()){
-  //   info(ns, `Favour requirement for donation met.`)
-  //   return await donate_for_rep(ns,target, rep)
-  // } else if (rep > 465e3){
-  //   info(ns, `Faction has high rep requirements. Grinding for favour and then resetting.`)
-  //   return await grind_rep(ns,target, 465e3)
-  }else{
-    return await grind_rep(ns, aug)
+// Do what is necessary to reach aug requisites
+async function reachAugRep(ns, aug){
+  let f = aug.faction;
+  let r = aug.rep;
+  
+  //Start working
+  for (const WORKTYPE of WORK_ORDER) {
+    if(ns.workForFaction(f, WORKTYPE))break;
   }
-}
+  ns.print(`Started working`);
 
-async function grind_rep(ns, aug){
-  while (ns.getFactionRep(aug.faction) < aug.rep) {
-    for (const WORKTYPE of WORK_ORDER) {
-      if(ns.workForFaction(aug.faction, WORKTYPE))break;
-    }
+  let earned = ns.getPlayer().workRepGained + ns.getFactionRep(f);
+  let cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
+  let allowDonation = ns.getFactionFavor(f) >= ns.getFavorToDonate();
+
+  displayWorkAdv(ns,aug);
+
+  //Check if worked enough, or enough money for donation
+  while(earned < r && (!allowDonation || ( allowDonation && ns.getServerMoneyAvailable('home')*.85<cost ) ) ){
     await ns.sleep(FACTION_WORK_LOOP_CHECK);
-    ns.stopAction();
+    earned = ns.getPlayer().workRepGained + ns.getFactionRep(f);
+    cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
+
+    displayWorkAdv(ns,aug);
   }
+  ns.stopAction();
+  ns.donateToFaction(f, (r - (ns.getPlayer().workRepGained + ns.getFactionRep(f))) * 1e6 / ns.getPlayer().faction_rep_mult);
   return true;
 }
 
