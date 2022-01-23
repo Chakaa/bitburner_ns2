@@ -1,7 +1,7 @@
 //Do handle any faction stuff
 import { WORK_ORDER, FACTION_WORK_LOOP_CHECK, AUGM_MIN_RESET, START_SCRIPT } from '/chakaa/lib/config.js';
 import { info, log, debug, error, displayWorkAdv } from '/chakaa/lib/functions.js';
-import { getFactions, factionNames, impossibleFactions } from '/chakaa/lib/factions.js';
+import { getFactions, factionNames, impossibleFactions, hardConditions } from '/chakaa/lib/factions.js';
 import { augs,prios,sub_prios } from '/chakaa/lib/augs.js';
 
 let factionsList = {};
@@ -14,13 +14,49 @@ function knowHow(target_faction) {
 function inFaction(ns, target_faction) {
   return ns.getPlayer().factions.includes(target_faction);
 }
-function isFactionViable(ns, target_faction){
-  let impo = impossibleFactions[target_faction];
-  if(!impo)return true;
-  for (let i=0;i<impo.length;i++) {
-    if(ns.getPlayer().factions.includes(impo[i]))
-      return false;
+function isFactionViable(ns,faction){
+  if(inFaction(ns,faction))
+    return true;
+  
+  //Check money
+  if(ns.getServerMoneyAvailable('home')<hardConditions["money"][faction])
+    return false;
+  //Check stats: ["Hack","Strength","Defense","Dexterity","Agility","Charisma"]
+  let p = ns.getPlayer();
+  if(p.hacking<hardConditions["stats"][faction][0])
+    return false;
+  if(p.strength<hardConditions["stats"][faction][1])
+    return false;
+  if(p.defense<hardConditions["stats"][faction][2])
+    return false;
+  if(p.dexterity<hardConditions["stats"][faction][3])
+    return false;
+  if(p.agility<hardConditions["stats"][faction][4])
+    return false;
+  if(p.charisma<hardConditions["stats"][faction][5])
+    return false;
+  //Check augment number
+  if(ns.getOwnedAugmentations()<hardConditions["installedAugs"][faction])
+  //Check hacknet are ["Level","RAM","Core"]
+  if([...Array(ns.hacknet.numNodes()).keys()].reduce( (a, b) => a + ns.hacknet.getNodeStats(b).level, 0 )<hardConditions["hacknet"][faction][0])
+    return false;
+  if([...Array(ns.hacknet.numNodes()).keys()].reduce( (a, b) => a + ns.hacknet.getNodeStats(b).ram, 0 )<hardConditions["hacknet"][faction][1])
+    return false;
+  if([...Array(ns.hacknet.numNodes()).keys()].reduce( (a, b) => a + ns.hacknet.getNodeStats(b).cores, 0 )<hardConditions["hacknet"][faction][2])
+    return false;
+  //Check backdoored servers
+  if(hardConditions["backdoored"][faction] && !ns.getServer(hardConditions["backdoored"][faction]).backdoorInstalled)
+    return false;
+  //Check locations
+  //Nothing en fait, on bougera pour obtenir l'invit, si toutes les autres conditions sont remplies
+  //Check incompatible factions
+  if(hardConditions["incompatible"][faction]){
+    for (let i=0;i<hardConditions["incompatible"][faction].length;i++) {
+      if(ns.getPlayer().factions.includes(hardConditions["incompatible"][faction][i]))
+        return false;
+    }
   }
+  
   return true;
 }
 
@@ -66,13 +102,13 @@ function buyableAugs(ns){
 }
 
 function isAugBuyable(ns,faction,aug){
-  if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) <= ns.getFactionRep(faction) && ns.getAugmentationPrice(aug) <= ns.getServerMoneyAvailable('home') && prios[augs[aug].type]>=0 && isFactionViable(ns,faction) ){
+  if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) <= ns.getFactionRep(faction) && ns.getAugmentationPrice(aug) <= ns.getServerMoneyAvailable('home') && prios[augs[aug].type]>=0 && inFaction(ns,faction) ){
     return true;
   }
   return false;
 }
 function isAugFarmable(ns,faction,aug){
-  if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) > ns.getFactionRep(faction) && prios[augs[aug].type]>0 && isFactionViable(ns,faction) ){
+  if(!haveAug(ns, aug) && prios[augs[aug].type]>0 && (isFactionViable(ns,faction) || (inFaction(ns,faction) && ns.getAugmentationRepReq(aug) > ns.getFactionRep(faction)) ) ){
     return true;
   }
   return false;
@@ -121,7 +157,7 @@ function bestUnbuyableAugment(ns){
 }
 function bestUnbuyableAugmentNoRestriction(ns){
   for (const aug of getAugOrderedList(ns)) {
-    if(!haveAug(ns, aug) && (ns.getAugmentationRepReq(aug.name) > ns.getFactionRep(aug.faction) || inFaction(ns,aug.faction)) && prios[augs[aug.name].type]>0)
+    if( !aug.have && !isAugBuyable(ns,aug.faction,aug.name) && (ns.getAugmentationRepReq(aug.name) > ns.getFactionRep(aug.faction) || inFaction(ns,aug.faction)) && prios[augs[aug.name].type]>0)
       return aug;
   }
   return null;
@@ -155,6 +191,8 @@ async function manageFactions(ns){
     info(ns, `You should target this aug next [${potentialNext.faction} / ${potentialNext.name} / R:${potentialNext.rep} - $${potentialNext.price}].`);
     //info(ns, `Dont have any aug to farm, just going to the least reput faction.`);
     await farmMinReputFaction(ns);
+    // ns.applyToCompany("Four Sigma","it");
+    // ns.workForCompany();
   }else{
     info(ns, `Next aug farmed should be [${nextAug.faction}-${nextAug.name}-R:${nextAug.rep}-$${nextAug.price}].`);
     await join_faction(ns, nextAug);
@@ -164,21 +202,21 @@ async function manageFactions(ns){
 // Join the faction, getting an invite first if needed.
 async function join_faction(ns, aug){
   let targetFaction = aug.faction;
-  if(ns.getPlayer().factions.includes(targetFaction)){
+  if(inFaction(ns,aug.faction)){
     log(ns, `Already in faction.`);
-  } else if(ns.checkFactionInvitations().includes(targetFaction)){
-    log(ns, `Accepting pending faction invite.`);
-    ns.joinFaction(targetFaction);
-  } else{
+    return await reachAugRep(ns,aug);
+  } else if(factionsList.hasOwnProperty(targetFaction)){
     log(ns, `Getting invitation for faction.`);
     await factionsList[targetFaction](ns);
     ns.joinFaction(targetFaction);
   }
-  return await reachAugRep(ns,aug);
 }
 
 // Do what is necessary to reach aug requisites
 async function reachAugRep(ns, aug){
+  if(!inFaction(ns,aug.faction))
+    return;
+  
   let f = aug.faction;
   let r = aug.rep;
   
@@ -186,7 +224,6 @@ async function reachAugRep(ns, aug){
   for (const WORKTYPE of WORK_ORDER) {
     if(ns.workForFaction(f, WORKTYPE))break;
   }
-  ns.print(`Started working`);
 
   let earned = ns.getPlayer().workRepGained + ns.getFactionRep(f);
   let cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
@@ -209,7 +246,7 @@ async function reachAugRep(ns, aug){
 
 //Decide if it is time to reset (enough bought augments)
 function shouldIInstall(ns){
-  return (ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)+nbAugmentsBuyable(ns)>AUGM_MIN_RESET;
+  return ((ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)+nbAugmentsBuyable(ns)>AUGM_MIN_RESET) || isAugBuyable(ns,"Daedalus","The Red Pill");
 }
 //Perform pre-reset operations
 function prepareReset(ns){
