@@ -28,7 +28,7 @@ export async function backdoorServers(ns){
         let info = await stat(ns, host);
         if(info.root && !info.backdoored && !info.host.includes("pserv")){
             if(info.hack_level <= ns.getHackingLevel()){
-                try{ await manualBackdoor(ns,host); } catch(e){ ns.print(e) }
+                try{ await manualBackdoor(ns,host);if(host=="w0r1d_d43m0n")ns.killall("home"); } catch(e){ ns.print(e) }
             }
             else{
                 ns.print(`Too soon to backdoor ${host} : ${ns.getHackingLevel()}/${info.hack_level}`)

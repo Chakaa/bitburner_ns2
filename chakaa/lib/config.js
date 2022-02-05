@@ -30,6 +30,8 @@ export const G_NAME = "/chakaa/bin/grow.js"; // Grow Script name
 export const H_NAME = "/chakaa/bin/hack.js"; // Grow Script name
 export const W_NAME = "/chakaa/bin/weaken.js"; // Grow Script name
 export const OP_RAM = 1.80; // Grow Script RAM
+export const S_NAME = "/chakaa/bin/share.js"; // Share Script name
+export const HACKNET_NODE_RATIO = 0.1 // Percentage of hacknet node used for hacking
 
 //Init config
 export const DELAY_BETWEEN_CHECKS = 60; // seconds
@@ -61,3 +63,9 @@ export const START_SCRIPT = "/chakaa/init.js" //Starting script after reset
 //acceptFactions config
 export const ACCEPT_FACTION_LOOP_CHECK = 5*1000;
 export const FACTION_INVITE_EXCLUSION = ["Sector-12","Chongqing","New Tokyo","Ishima","Aevum","Volhaven"];
+
+//Corporation config
+export const CORP_ACTION_LOOP = 2*1000;
+export const CORP_NAME = "MyCorpo";
+export const AGRI_NAME = "Agrifun";
+export const TOBA_NAME = "LaFumetteCestChouette";

@@ -23,7 +23,7 @@ export const hardConditions = {
     "CyberSec":[0,0,0,0,0,0],"Tian Di Hui":[50,0,0,0,0,0],"Netburners":[80,0,0,0,0,0]
     ,"Sector-12":[50,0,0,0,0,0],"Chongqing":[0,0,0,0,0,0],"New Tokyo":[0,0,0,0,0,0],"Ishima":[0,0,0,0,0,0],"Aevum":[0,0,0,0,0,0],"Volhaven":[0,0,0,0,0,0]
     ,"NiteSec":[0,0,0,0,0,0],"The Black Hand":[0,0,0,0,0,0],"BitRunners":[0,0,0,0,0,0]
-    ,"ECorp":[0,0,0,0,0,0],"MegaCorp":[0,0,0,0,0,0],"KuaiGong International":[0,0,0,0,0,0],"Four Sigma":[0,0,0,0,0,0],"NWO":[0,0,0,0,0,0],"Blade Industries":[0,0,0,0,0,0],"OmniTek Incorporated":[0,0,0,0,0,0],"Bachman & Associates":[0,0,0,0,0,0],"Clarke Incorporated":[0,0,0,0,0,0],"Fulcrum Secret Technologies":[0,0,0,0,0,0]
+    ,"ECorp":[1500,0,0,0,0,0],"MegaCorp":[1500,0,0,0,0,0],"KuaiGong International":[1500,0,0,0,0,0],"Four Sigma":[1500,0,0,0,0,0],"NWO":[1500,0,0,0,0,0],"Blade Industries":[1500,0,0,0,0,0],"OmniTek Incorporated":[1500,0,0,0,0,0],"Bachman & Associates":[1500,0,0,0,0,0],"Clarke Incorporated":[1500,0,0,0,0,0],"Fulcrum Secret Technologies":[1500,0,0,0,0,0]
     ,"Slum Snakes":[0,30,30,30,30,0],"Tetrads":[0,75,75,75,75,0],"Silhouette":[0,0,0,0,0,0],"Speakers for the Dead":[100,300,300,300,300,0],"The Dark Army":[300,300,300,300,300,0],"The Syndicate":[200,200,200,200,200,0]
     ,"The Covenant":[850,850,850,850,850,0],"Daedalus":[2500,0,0,0,0,0],"Illuminati":[1500,1200,1200,1200,1200,0]
   }
@@ -76,6 +76,7 @@ export const factionNames = {
   ,"ECorp":6,"MegaCorp":6,"KuaiGong International":6,"Four Sigma":6,"NWO":6,"Blade Industries":6,"OmniTek Incorporated":6,"Bachman & Associates":6,"Clarke Incorporated":6,"Fulcrum Secret Technologies":6
   ,"Slum Snakes":9,"Tetrads":9,"Silhouette":9,"Speakers for the Dead":9,"The Dark Army":9,"The Syndicate":9
   ,"The Covenant":6,"Daedalus":6,"Illuminati":6
+  ,"Bladeburners":10
 }
 
 export const impossibleFactions = {

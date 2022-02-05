@@ -15,9 +15,19 @@ export function buyRam(ns,budget) {
 	}
 	return false;
 }
+export function buyCores(ns,budget) {
+	let cost = ns.getUpgradeHomeCoresCost();
+	if(cost<=budget){
+		ns.upgradeHomeCores();
+		debug(ns,`Upgraded home cores`)
+		return true;
+	}
+	return false;
+}
 
 const actions = [
   [buyRam, 1.0]
+  ,[buyCores, 0.6]
 ];
 
 /** @param {NS} ns **/

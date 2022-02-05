@@ -11,7 +11,7 @@ export const prios = {
   "combat": 0,
   "bladeburner": 1,
   "special": 3,
-  "superspecial": 5,
+  "superspecial": 3,
 }
 export const sub_prios = {
   "truc": 1

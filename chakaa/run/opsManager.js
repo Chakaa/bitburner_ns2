@@ -1,4 +1,4 @@
-import { HACK_RATIO,G_NAME,H_NAME,W_NAME,OP_RAM,HOME_RAM_RESERVED,MIN_MONEY_FOR_HACK,GROWTH_FACTOR,MIN_SLEEP_TIME } from 'chakaa/lib/config.js';
+import { HACK_RATIO,G_NAME,H_NAME,W_NAME,OP_RAM,HOME_RAM_RESERVED,MIN_MONEY_FOR_HACK,GROWTH_FACTOR,MIN_SLEEP_TIME, S_NAME, HACKNET_NODE_RATIO } from 'chakaa/lib/config.js';
 import { info, log, error, debug, toMoney, toInt, walk, manualBackdoor } from 'chakaa/lib/functions.js';
 
 /**
@@ -15,6 +15,10 @@ export async function main(ns) {
   //await scanHome(ns);
 
 	while(true){
+    if(ns.isRunning(S_NAME,ns.getHostname())){
+      ns.kill(S_NAME,ns.getHostname())
+    }
+
     let mapped = await mapNetwork(ns);
     let analyzed = await analyzeNetwork(ns,mapped[0],mapped[1]);
     let network = analyzed[0];
@@ -25,6 +29,7 @@ export async function main(ns) {
     sleep = Math.max(Math.min(sleep, min_time_val) + 500, MIN_SLEEP_TIME);
   
     //writeTSV("/run/shodan/network.txt", network, {"host", "max_threads", "threads", "weaken", "grow", "hack", "priority", "money", "max_money"})
+    finishHome(ns);
 
     if(ns.args[0]=="once"){
       log(ns,`Would sleep for: ${toInt(ns,sleep/1000)}s, but breaking here because running once`);
@@ -41,6 +46,17 @@ export async function main(ns) {
   }
 }
 
+export async function finishHome(ns){
+  //let avRam = Math.max(0,(ns.getServerRam("home")[0] - HOME_RAM_RESERVED - ns.getServerRam("home")[1]));
+  let avRam = Math.max(0,(ns.getServerRam("home")[0] - ns.getServerRam("home")[1]));
+  let avShareThreads = Math.floor(avRam/ns.getScriptRam(S_NAME))-1;
+  
+  if(avShareThreads>0){
+    ns.exec(S_NAME, "home", avShareThreads);
+    log(ns,`Sharing on ${avShareThreads} threads for share power ${ns.getSharePower()}`);
+  }
+}
+
 // Scan a single host and return information about it.
 export async function stat(ns, host) {
 	let stat = {};
@@ -49,7 +65,7 @@ export async function stat(ns, host) {
 	stat.ls = ns.ls(host);
 	stat.root = ns.hasRootAccess(host);
 	stat.ports = ns.getServerNumPortsRequired(host);
-	stat.ram = ns.getServerRam(host)[0];
+	stat.ram = ns.getServerRam(host)[0]*(host.includes("hacknet-node-")?HACKNET_NODE_RATIO:1);
 	stat.ram_used = ns.getServerRam(host)[1];
 	stat.security = ns.getServerSecurityLevel(host);
 	stat.min_security = ns.getServerMinSecurityLevel(host);

@@ -183,7 +183,7 @@ export function displayWorkAdv(ns,aug){
 	let cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
 	let allowDonation = ns.getFactionFavor(f) >= ns.getFavorToDonate();
   
-	ns.print(`Earned : ${earned}/${r}`);
+	ns.print(`Earned : ${Math.floor(earned)}/${Math.floor(r)}`);
 	if(allowDonation)
-	  ns.print(`Cost : ${ns.getServerMoneyAvailable('home')*.5}/${cost}`);
+	  ns.print(`Cost : ${Math.floor(ns.getServerMoneyAvailable('home')*.85)}/${Math.floor(cost)}`);
 }

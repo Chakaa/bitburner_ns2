@@ -1,5 +1,5 @@
 //Do handle any faction stuff
-import { WORK_ORDER, FACTION_WORK_LOOP_CHECK, AUGM_MIN_RESET, START_SCRIPT } from '/chakaa/lib/config.js';
+import { WORK_ORDER, FACTION_WORK_LOOP_CHECK, AUGM_MIN_RESET, START_SCRIPT,UNIS } from '/chakaa/lib/config.js';
 import { info, log, debug, error, displayWorkAdv } from '/chakaa/lib/functions.js';
 import { getFactions, factionNames, impossibleFactions, hardConditions } from '/chakaa/lib/factions.js';
 import { augs,prios,sub_prios } from '/chakaa/lib/augs.js';
@@ -67,7 +67,7 @@ function getAugmentationScore(ns, faction, aug){
   let aug_type_prio = prios[augs[aug].type];
   let aug_stype_prio = sub_prios[augs[aug].stype];
 
-  return rep_cost*money_cost*faction_rank/(aug_type_prio+aug_stype_prio);
+  return (rep_cost+money_cost)*faction_rank/(aug_type_prio+aug_stype_prio);
 }
 
 //Get faction with currently more reput
@@ -76,7 +76,7 @@ function getMaxReputFaction(ns){
   let target = null;
   for (const [key, value] of Object.entries(factionNames)) {
     let thisRep = ns.getFactionRep(key);
-    if(thisRep>rep){
+    if(thisRep>rep && key!="Bladeburners"){
       rep=thisRep;
       target=key;
     }
@@ -86,7 +86,7 @@ function getMaxReputFaction(ns){
 }
 //Decide if it is time to reset (enough bought augments)
 function isItTime(ns){
-  return (ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)>AUGM_MIN_RESET;
+  return (ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)>(ns.getOwnedAugmentations(true).includes("CashRoot Starter Kit")?1:2)*AUGM_MIN_RESET;
 }
 
 function buyableAugs(ns){
@@ -101,6 +101,12 @@ function buyableAugs(ns){
   return Object.entries(item).length;
 }
 
+function isAugReputed(ns,faction,aug){
+  if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) <= ns.getFactionRep(faction) && /*ns.getAugmentationPrice(aug) <= ns.getServerMoneyAvailable('home') &&*/ prios[augs[aug].type]>=0 && inFaction(ns,faction) ){
+    return true;
+  }
+  return false;
+}
 function isAugBuyable(ns,faction,aug){
   if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) <= ns.getFactionRep(faction) && ns.getAugmentationPrice(aug) <= ns.getServerMoneyAvailable('home') && prios[augs[aug].type]>=0 && inFaction(ns,faction) ){
     return true;
@@ -122,7 +128,20 @@ function getAugOrderedList(ns){
         info(ns, `Unkown augmentation "${aug}" from faction ${key}.`);
         continue;
       }
-      faction_augs.push( {faction:key, name:aug, rep:ns.getAugmentationRepReq(aug), price: ns.getAugmentationPrice(aug), prio:prios[augs[aug].type], have:haveAug(ns, aug), r:getAugmentationScore(ns,key,aug)} );
+      let found = false;
+      for(let i=0;i<faction_augs.length;i++){
+        let a = faction_augs[i];
+        if(a.name==aug){
+          if(factionNames[a.faction]>factionNames[key]){
+            faction_augs.splice(i, 1);
+          }else{
+            found = true;
+          }
+          break;
+        }
+      }
+      if(!found)
+        faction_augs.push( {faction:key, name:aug, rep:ns.getAugmentationRepReq(aug), price: ns.getAugmentationPrice(aug), prio:prios[augs[aug].type], have:haveAug(ns, aug), r:getAugmentationScore(ns,key,aug)} );
     }
   }
   faction_augs.sort((a,b) => {
@@ -147,9 +166,19 @@ function nbAugmentsBuyable(ns){
   }
   return out;
 }
+function anyBuyableAugment(ns){
+  for (const [key, value] of Object.entries(factionNames)) {
+    for (const aug of ns.getAugmentationsFromFaction(key)) {
+      if(!haveAug(ns, aug) && ns.getAugmentationRepReq(aug) <= ns.getFactionRep(key) && ns.getAugmentationPrice(aug) <= ns.getServerMoneyAvailable('home') && inFaction(ns,key)){
+        return true;
+      }
+    }
+  }
+  return false;
+}
 function bestUnbuyableAugment(ns){
   for (const aug of getAugOrderedList(ns)) {
-    if(isAugFarmable(ns,aug.faction,aug.name) && !isAugBuyable(ns,aug.faction,aug.name)  && ( inFaction(ns,aug.faction) || knowHow(aug.faction) ) && (aug.r>0 || augs[aug.name].type.includes("special") ) ){
+    if(isAugFarmable(ns,aug.faction,aug.name) && !isAugReputed(ns,aug.faction,aug.name) /*&& !isAugBuyable(ns,aug.faction,aug.name)*/  && ( inFaction(ns,aug.faction) || knowHow(aug.faction) ) && (aug.r>0 || augs[aug.name].type.includes("special") ) ){
       return aug;
     }   
   }
@@ -187,10 +216,18 @@ async function farmMinReputFaction(ns){
 async function manageFactions(ns){
   let nextAug = bestUnbuyableAugment(ns);
   if (!nextAug) {
+    // if(ns.getPlayer().factions.length==0){
+    //   ns.universityCourse(UNIS[ns.getPlayer().city][0],"Study Computer Science");
+    // }else{
+    //   let potentialNext = bestUnbuyableAugmentNoRestriction(ns);
+    //   info(ns, `You should target this aug next [${potentialNext.faction} / ${potentialNext.name} / R:${potentialNext.rep} - $${potentialNext.price}].`);
+    //   await ns.sleep(FACTION_WORK_LOOP_CHECK);
+    // }
     let potentialNext = bestUnbuyableAugmentNoRestriction(ns);
     info(ns, `You should target this aug next [${potentialNext.faction} / ${potentialNext.name} / R:${potentialNext.rep} - $${potentialNext.price}].`);
+    await ns.sleep(FACTION_WORK_LOOP_CHECK);
     //info(ns, `Dont have any aug to farm, just going to the least reput faction.`);
-    await farmMinReputFaction(ns);
+    // await farmMinReputFaction(ns);
     // ns.applyToCompany("Four Sigma","it");
     // ns.workForCompany();
   }else{
@@ -228,6 +265,7 @@ async function reachAugRep(ns, aug){
   let earned = ns.getPlayer().workRepGained + ns.getFactionRep(f);
   let cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
   let allowDonation = ns.getFactionFavor(f) >= ns.getFavorToDonate();
+  let forceInstall = false;
 
   displayWorkAdv(ns,aug);
 
@@ -238,8 +276,15 @@ async function reachAugRep(ns, aug){
     cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
 
     displayWorkAdv(ns,aug);
+    if(earned < r && !allowDonation && ns.getFactionFavor(f)+ns.getFactionFavorGain(f)>=ns.getFavorToDonate() && anyBuyableAugment(ns)){
+      forceInstall=true;
+      break;
+    }
   }
   ns.stopAction();
+  if(forceInstall){
+    prepareReset(ns);
+  }
   ns.donateToFaction(f, (r - (ns.getPlayer().workRepGained + ns.getFactionRep(f))) * 1e6 / ns.getPlayer().faction_rep_mult);
   return true;
 }
@@ -299,9 +344,15 @@ function prepareReset(ns){
     }
     
     faction_augs.sort((a,b) => (a.price > b.price || (a.price == b.price && a.prio > b.prio)) ? -1 : ((b.price > a.price || (a.price == b.price && b.prio > a.prio)) ? 1 : 0));
-    for (const aug of faction_augs) {
-      if(aug.price <= ns.getServerMoneyAvailable('home')){
-        ns.purchaseAugmentation(aug.faction, aug.name)
+    let anythingBought = true;
+    while(anythingBought){
+      anythingBought = false;
+      for (const aug of faction_augs) {
+        // if(aug.price <= ns.getServerMoneyAvailable('home')){
+        //   ns.purchaseAugmentation(aug.faction, aug.name)
+        // }
+        if(ns.purchaseAugmentation(aug.faction, aug.name))
+          anythingBought = true;
       }
     }
   }catch(e){ debug(ns,e) }
@@ -321,12 +372,11 @@ export async function main(ns) {
 
   factionsList = getFactions(ns);
   while(true){
-    await manageFactions(ns);
-
     if(shouldIInstall(ns)){
       prepareReset(ns);
       ns.installAugmentations(START_SCRIPT);
     }
-    await ns.sleep(FACTION_WORK_LOOP_CHECK);
+    await manageFactions(ns);
+    await ns.sleep(1000);
   }
 }
