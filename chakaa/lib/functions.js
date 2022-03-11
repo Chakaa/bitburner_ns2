@@ -1,5 +1,9 @@
 import { MONEY_FORMAT,INT_FORMAT,LEV_LOG,INF_LOG,LOG_LOG,DEB_LOG,ERR_LOG } from 'chakaa/lib/config.js';
 
+const extraFormats = [1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30];
+const extraNotations = ["k", "m" ,"b", "t", "q", "Q", "s", "S", "o", "n"];
+const gigaMultiplier = { standard: 1e9, iec60027_2: 2 ** 30 };
+
 /** @param {NS} ns **/
 export async function info(ns,message) {
 	if(INF_LOG==="terminal"){
@@ -27,11 +31,41 @@ export async function error(ns,message) {
 	}
 	ns.print(message);
 }
-export function toMoney(ns,value) {
-	return ns.nFormat(value, MONEY_FORMAT);
-}
 export function toInt(ns,value) {
 	return ns.nFormat(value, INT_FORMAT);
+}
+function roundToFixed(value, precision) {
+    var precision = precision || 0,
+        power = Math.pow(10, precision),
+        absValue = Math.abs(Math.round(value * power)),
+        result = (value < 0 ? '-' : '') + String(Math.floor(absValue / power));
+
+    if (precision > 0) {
+        var fraction = String(absValue % power),
+            padding = new Array(Math.max(precision - fraction.length, 0) + 1).join('0');
+        result += '.' + padding + fraction;
+    }
+    return result;
+}
+function formatReallyBigNumber(n, decimalPlaces = 3){
+    if (n === Infinity) return "∞";
+    if (Math.abs(n) < 1000) {
+      return roundToFixed(n, decimalPlaces);
+    }
+    for (let i = 0; i < extraFormats.length; i++) {
+      if (extraFormats[i] < n && n <= extraFormats[i] * 1000) {
+        return roundToFixed(n / extraFormats[i], decimalPlaces) + extraNotations[i];
+      }
+    }
+    return "NaN";
+}
+export function toMoney(value, decimalPlaces = 3) {
+	//return ns.nFormat(value, MONEY_FORMAT);
+	return "$" + formatReallyBigNumber(value,decimalPlaces);
+}
+export function niceNumberDisplay(value,pref="",suff="",decimalPlaces=3) {
+	//return ns.nFormat(value, MONEY_FORMAT);
+	return pref + formatReallyBigNumber(value,decimalPlaces) + suff;
 }
 
 export async function walkOne(ns, fn, host, depth, seen){
@@ -183,7 +217,7 @@ export function displayWorkAdv(ns,aug){
 	let cost = (r - earned) * 1e6 / ns.getPlayer().faction_rep_mult;
 	let allowDonation = ns.getFactionFavor(f) >= ns.getFavorToDonate();
   
-	ns.print(`Earned : ${Math.floor(earned)}/${Math.floor(r)}`);
+	ns.print(`Earned : ${formatReallyBigNumber(earned,0)}/${formatReallyBigNumber(r,0)}`);
 	if(allowDonation)
-	  ns.print(`Cost : ${Math.floor(ns.getServerMoneyAvailable('home')*.85)}/${Math.floor(cost)}`);
+	  ns.print(`Cost : ${toMoney(ns.getServerMoneyAvailable('home')*.85,0)}/${toMoney(cost,0)}`);
 }

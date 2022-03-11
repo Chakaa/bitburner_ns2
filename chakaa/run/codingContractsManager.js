@@ -263,33 +263,28 @@ export async function mergeIntervals(ns,filename,hostname) {
     let inputData = cc.getData(filename, hostname);
     let answer = [];
 
-    for(let i=0;i<inputData.length-1;i++){
-        for(let j=i+1;j<inputData.length;j++){
-            if( 
-                (inputData[i][0]>=inputData[j][0] && inputData[i][0]<=inputData[j][1]) 
-                || (inputData[i][1]>=inputData[j][0] && inputData[i][1]<=inputData[j][1]) 
-                || (inputData[i][0]>=inputData[j][0] && inputData[i][1]<=inputData[j][1])
-                || (inputData[i][1]>=inputData[j][1] && inputData[i][0]<=inputData[j][0])
-            ){
-            let tmp = [Math.min(inputData[i][0],inputData[j][0]),Math.max(inputData[i][1],inputData[j][1])];
-            inputData[i]=tmp;
-            inputData.splice(j, 1);
-                i=-1;
-                break;
-          }
+    // Sort Intervals in increasing order of start value
+    inputData.sort((a,b) => a[0] > b[0] ? 1 : (a[0] < b[0] ? -1 : 0));
+
+    let index = 0; // Stores index of last element in output array (modified arr[])
+
+    for(let i=1;i<inputData.length;i++){
+        // If this is not first Interval and overlaps with the previous one
+        if (inputData[index][1] >=  inputData[i][0])
+        {
+            // Merge previous and current Intervals
+            inputData[index][1] = Math.max(inputData[index][1], inputData[i][1]);
+        }
+        else {
+            index++;
+            inputData[index] = inputData[i];
         }
     }
 
-    answer = inputData;
-    for(let i=0;i<answer.length-1;i++){
-        if(answer[i][0]>answer[i+1][0]){
-            let tmp = answer[i+1];
-            answer[i+1]=answer[i];
-            answer[i]=tmp;
-            --i;
-        }
+    for (let i = 0; i <= index; i++){
+        answer.push(inputData[i]);
     }
-
+    
     //return "I do not know the solution here : "+filename+" on "+hostname+" (mergeIntervals)";
     return cc.attempt(answer,filename,hostname,{returnReward:true});
 }

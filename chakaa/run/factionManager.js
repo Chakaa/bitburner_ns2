@@ -1,6 +1,6 @@
 //Do handle any faction stuff
 import { WORK_ORDER, FACTION_WORK_LOOP_CHECK, AUGM_MIN_RESET, START_SCRIPT,UNIS } from '/chakaa/lib/config.js';
-import { info, log, debug, error, displayWorkAdv } from '/chakaa/lib/functions.js';
+import { info, log, debug, error, displayWorkAdv, toMoney, niceNumberDisplay } from '/chakaa/lib/functions.js';
 import { getFactions, factionNames, impossibleFactions, hardConditions } from '/chakaa/lib/factions.js';
 import { augs,prios,sub_prios } from '/chakaa/lib/augs.js';
 
@@ -214,6 +214,9 @@ async function farmMinReputFaction(ns){
 }
 
 async function manageFactions(ns){
+  if(!inFaction(ns,"CyberSec")){
+    return;
+  }
   let nextAug = bestUnbuyableAugment(ns);
   if (!nextAug) {
     // if(ns.getPlayer().factions.length==0){
@@ -224,14 +227,16 @@ async function manageFactions(ns){
     //   await ns.sleep(FACTION_WORK_LOOP_CHECK);
     // }
     let potentialNext = bestUnbuyableAugmentNoRestriction(ns);
-    info(ns, `You should target this aug next [${potentialNext.faction} / ${potentialNext.name} / R:${potentialNext.rep} - $${potentialNext.price}].`);
+    if(potentialNext){
+      info(ns, `You should target this aug next [${potentialNext.faction} / ${potentialNext.name} / R:${niceNumberDisplay(potentialNext.rep)} - ${toMoney(potentialNext.price)}].`);
+    }
     await ns.sleep(FACTION_WORK_LOOP_CHECK);
     //info(ns, `Dont have any aug to farm, just going to the least reput faction.`);
     // await farmMinReputFaction(ns);
     // ns.applyToCompany("Four Sigma","it");
     // ns.workForCompany();
   }else{
-    info(ns, `Next aug farmed should be [${nextAug.faction}-${nextAug.name}-R:${nextAug.rep}-$${nextAug.price}].`);
+    info(ns, `Next aug farmed should be [${nextAug.faction}-${nextAug.name}-R:${niceNumberDisplay(nextAug.rep)}-${toMoney(nextAug.price)}].`);
     await join_faction(ns, nextAug);
   }
 }
@@ -292,6 +297,10 @@ async function reachAugRep(ns, aug){
 //Decide if it is time to reset (enough bought augments)
 function shouldIInstall(ns){
   return ((ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)+nbAugmentsBuyable(ns)>AUGM_MIN_RESET) || isAugBuyable(ns,"Daedalus","The Red Pill");
+}
+//Decide if it is time to reset (enough bought augments)
+function shouldIReset(ns){
+  return ((ns.getOwnedAugmentations(true).length-ns.getOwnedAugmentations(false).length)>AUGM_MIN_RESET) || isAugBuyable(ns,"Daedalus","The Red Pill");
 }
 //Perform pre-reset operations
 function prepareReset(ns){
@@ -374,7 +383,9 @@ export async function main(ns) {
   while(true){
     if(shouldIInstall(ns)){
       prepareReset(ns);
-      ns.installAugmentations(START_SCRIPT);
+      if(shouldIReset(ns)){
+        ns.installAugmentations(START_SCRIPT);
+      }
     }
     await manageFactions(ns);
     await ns.sleep(1000);

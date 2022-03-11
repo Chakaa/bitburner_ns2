@@ -10,6 +10,7 @@ export const hardConditions = {
     ,"ECorp":0,"MegaCorp":0,"KuaiGong International":0,"Four Sigma":0,"NWO":0,"Blade Industries":0,"OmniTek Incorporated":0,"Bachman & Associates":0,"Clarke Incorporated":0,"Fulcrum Secret Technologies":0
     ,"Slum Snakes":1e6,"Tetrads":0,"Silhouette":15e6,"Speakers for the Dead":0,"The Dark Army":0,"The Syndicate":10e6
     ,"The Covenant":75e9,"Daedalus":100e9,"Illuminati":150e9
+    ,"Bladeburners":0
   }
   ,"installedAugs":{
     "CyberSec":0,"Tian Di Hui":0,"Netburners":0
@@ -18,14 +19,16 @@ export const hardConditions = {
     ,"ECorp":0,"MegaCorp":0,"KuaiGong International":0,"Four Sigma":0,"NWO":0,"Blade Industries":0,"OmniTek Incorporated":0,"Bachman & Associates":0,"Clarke Incorporated":0,"Fulcrum Secret Technologies":0
     ,"Slum Snakes":0,"Tetrads":0,"Silhouette":0,"Speakers for the Dead":0,"The Dark Army":0,"The Syndicate":0
     ,"The Covenant":20,"Daedalus":30,"Illuminati":30
+    ,"Bladeburners":0
   }
   ,"stats":{ //["Hacking","Strength","Defense","Dexterity","Agility","Charisma"]
     "CyberSec":[0,0,0,0,0,0],"Tian Di Hui":[50,0,0,0,0,0],"Netburners":[80,0,0,0,0,0]
     ,"Sector-12":[50,0,0,0,0,0],"Chongqing":[0,0,0,0,0,0],"New Tokyo":[0,0,0,0,0,0],"Ishima":[0,0,0,0,0,0],"Aevum":[0,0,0,0,0,0],"Volhaven":[0,0,0,0,0,0]
     ,"NiteSec":[0,0,0,0,0,0],"The Black Hand":[0,0,0,0,0,0],"BitRunners":[0,0,0,0,0,0]
-    ,"ECorp":[1500,0,0,0,0,0],"MegaCorp":[1500,0,0,0,0,0],"KuaiGong International":[1500,0,0,0,0,0],"Four Sigma":[1500,0,0,0,0,0],"NWO":[1500,0,0,0,0,0],"Blade Industries":[1500,0,0,0,0,0],"OmniTek Incorporated":[1500,0,0,0,0,0],"Bachman & Associates":[1500,0,0,0,0,0],"Clarke Incorporated":[1500,0,0,0,0,0],"Fulcrum Secret Technologies":[1500,0,0,0,0,0]
+    ,"ECorp":[225,0,0,0,0,0],"MegaCorp":[225,0,0,0,0,0],"KuaiGong International":[225,0,0,0,0,0],"Four Sigma":[225,0,0,0,0,0],"NWO":[225,0,0,0,0,0],"Blade Industries":[225,0,0,0,0,0],"OmniTek Incorporated":[225,0,0,0,0,0],"Bachman & Associates":[225,0,0,0,0,0],"Clarke Incorporated":[225,0,0,0,0,0],"Fulcrum Secret Technologies":[225,0,0,0,0,0]
     ,"Slum Snakes":[0,30,30,30,30,0],"Tetrads":[0,75,75,75,75,0],"Silhouette":[0,0,0,0,0,0],"Speakers for the Dead":[100,300,300,300,300,0],"The Dark Army":[300,300,300,300,300,0],"The Syndicate":[200,200,200,200,200,0]
     ,"The Covenant":[850,850,850,850,850,0],"Daedalus":[2500,0,0,0,0,0],"Illuminati":[1500,1200,1200,1200,1200,0]
+    ,"Bladeburners":[99999999,1200,1200,1200,1200,0]
   }
   ,"hacknet":{ //["Level","RAM","Core"]
     "CyberSec":[0,0,0],"Tian Di Hui":[0,0,0],"Netburners":[100,8,4]
@@ -34,6 +37,7 @@ export const hardConditions = {
     ,"ECorp":[0,0,0],"MegaCorp":[0,0,0],"KuaiGong International":[0,0,0],"Four Sigma":[0,0,0],"NWO":[0,0,0],"Blade Industries":[0,0,0],"OmniTek Incorporated":[0,0,0],"Bachman & Associates":[0,0,0],"Clarke Incorporated":[0,0,0],"Fulcrum Secret Technologies":[0,0,0]
     ,"Slum Snakes":[0,0,0],"Tetrads":[0,0,0],"Silhouette":[0,0,0],"Speakers for the Dead":[0,0,0],"The Dark Army":[0,0,0],"The Syndicate":[0,0,0]
     ,"The Covenant":[0,0,0],"Daedalus":[0,0,0],"Illuminati":[0,0,0]
+    ,"Bladeburners":[0,0,0]
   }
   ,"backdoored":{
     "CyberSec":"CSEC","Tian Di Hui":null,"Netburners":null
@@ -42,14 +46,16 @@ export const hardConditions = {
     ,"ECorp":null,"MegaCorp":null,"KuaiGong International":null,"Four Sigma":null,"NWO":null,"Blade Industries":null,"OmniTek Incorporated":null,"Bachman & Associates":null,"Clarke Incorporated":null,"Fulcrum Secret Technologies":"fulcrumassets"
     ,"Slum Snakes":null,"Tetrads":null,"Silhouette":null,"Speakers for the Dead":null,"The Dark Army":null,"The Syndicate":null
     ,"The Covenant":null,"Daedalus":null,"Illuminati":null
+    ,"Bladeburners":null
   }
   ,"location":{
     "CyberSec":null,"Tian Di Hui":"Chongqing","Netburners":null
     ,"Sector-12":"Sector-12","Chongqing":"Chongqing","New Tokyo":"New Tokyo","Ishima":"Ishima","Aevum":"Aevum","Volhaven":"Volhaven"
     ,"NiteSec":null,"The Black Hand":null,"BitRunners":null
-    ,"ECorp":null,"MegaCorp":null,"KuaiGong International":null,"Four Sigma":null,"NWO":null,"Blade Industries":null,"OmniTek Incorporated":null,"Bachman & Associates":null,"Clarke Incorporated":null,"Fulcrum Secret Technologies":null
+    ,"ECorp":null,"MegaCorp":null,"KuaiGong International":null,"Four Sigma":null,"NWO":"Volhaven","Blade Industries":null,"OmniTek Incorporated":"Volhaven","Bachman & Associates":null,"Clarke Incorporated":null,"Fulcrum Secret Technologies":null
     ,"Slum Snakes":null,"Tetrads":"Chongqing","Silhouette":null,"Speakers for the Dead":null,"The Dark Army":"Chongqing","The Syndicate":"Sector-12"
     ,"The Covenant":null,"Daedalus":null,"Illuminati":null
+    ,"Bladeburners":null
   }
   ,"incompatible":{
     "CyberSec":null,"Tian Di Hui":null,"Netburners":null
@@ -58,6 +64,7 @@ export const hardConditions = {
     ,"ECorp":null,"MegaCorp":null,"KuaiGong International":null,"Four Sigma":null,"NWO":null,"Blade Industries":null,"OmniTek Incorporated":null,"Bachman & Associates":null,"Clarke Incorporated":null,"Fulcrum Secret Technologies":null
     ,"Slum Snakes":null,"Tetrads":null,"Silhouette":null,"Speakers for the Dead":null,"The Dark Army":null,"The Syndicate":null
     ,"The Covenant":null,"Daedalus":null,"Illuminati":null
+    ,"Bladeburners":null
   }
   ,"megacorps":{
     "CyberSec":null,"Tian Di Hui":null,"Netburners":null
@@ -66,6 +73,7 @@ export const hardConditions = {
     ,"ECorp":"ECorp","MegaCorp":"MegaCorp","KuaiGong International":"KuaiGong International","Four Sigma":"Four Sigma","NWO":"NWO","Blade Industries":"Blade Industries","OmniTek Incorporated":"OmniTek Incorporated","Bachman & Associates":"Bachman & Associates","Clarke Incorporated":"Clarke Incorporated","Fulcrum Secret Technologies":"Fulcrum Technologies"
     ,"Slum Snakes":null,"Tetrads":null,"Silhouette":null,"Speakers for the Dead":null,"The Dark Army":null,"The Syndicate":null
     ,"The Covenant":null,"Daedalus":null,"Illuminati":null
+    ,"Bladeburners":null
   }
 }
 
@@ -76,7 +84,17 @@ export const factionNames = {
   ,"ECorp":6,"MegaCorp":6,"KuaiGong International":6,"Four Sigma":6,"NWO":6,"Blade Industries":6,"OmniTek Incorporated":6,"Bachman & Associates":6,"Clarke Incorporated":6,"Fulcrum Secret Technologies":6
   ,"Slum Snakes":9,"Tetrads":9,"Silhouette":9,"Speakers for the Dead":9,"The Dark Army":9,"The Syndicate":9
   ,"The Covenant":6,"Daedalus":6,"Illuminati":6
-  ,"Bladeburners":10
+  //,"Bladeburners":10
+}
+//Hacking/FieldWork/SecurityWork
+export const workNames = {
+  "CyberSec":[1,0,0],"Tian Di Hui":[1,0,1],"Netburners":[1,0,0]
+  ,"Sector-12":[1,1,1],"Chongqing":[1,1,1],"New Tokyo":[1,1,1],"Ishima":[1,1,1],"Aevum":[1,1,1],"Volhaven":[1,1,1]
+  ,"NiteSec":[1,0,0],"The Black Hand":[1,1,0],"BitRunners":[1,0,0]
+  ,"ECorp":[1,1,1],"MegaCorp":[1,1,1],"KuaiGong International":[1,1,1],"Four Sigma":[1,1,1],"NWO":[1,1,1],"Blade Industries":[1,1,1],"OmniTek Incorporated":[1,1,1],"Bachman & Associates":[1,1,1],"Clarke Incorporated":[1,1,1],"Fulcrum Secret Technologies":[1,1,1]
+  ,"Slum Snakes":[1,0,1],"Tetrads":[0,0,0],"Silhouette":[0,0,0],"Speakers for the Dead":[0,0,0],"The Dark Army":[0,0,0],"The Syndicate":[0,0,0]
+  ,"The Covenant":[0,0,0],"Daedalus":[1,1,0],"Illuminati":[0,0,0]
+  //,"Bladeburners":10
 }
 
 export const impossibleFactions = {
@@ -110,6 +128,7 @@ function setMover(factionName){
 function setJob(factionName){
   return setFaction(factionName)(async function(ns) {
     ns.tprint(`Trying to join ${factionName}`);
+    //if(ns.getPlayer().city!=hardConditions["location"][factionName]){ns.travelToCity(hardConditions["location"][factionName])}
     ns.applyToCompany(hardConditions["megacorps"][factionName],"it");
     ns.workForCompany();
     while(ns.getPlayer().workRepGained + ns.getCompanyRep(hardConditions["megacorps"][factionName])<200000){

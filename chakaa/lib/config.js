@@ -22,6 +22,7 @@ export const MIN_MONEY_FOR_HACK = 2e6; // Server needs at least this much money 
 export const GROWTH_FACTOR = 2; // How much we try to grow each server between hacks.
 export const MIN_SLEEP_TIME = 1000.0; // What the shortest time we're willing to sleep is. Small values can adversely affect performance once we have a very large swarm.
 export const HOME_RAM_RESERVED = 256; // How much memory do we reserve on home for user scripts.
+export const HOME_RAM_RESERVED_2 = 2048; // How much memory do we reserve on home for user scripts.
 export const OPS_NAME = "chakaa.bin.opScript.js"; // OPS Script name
 export const OPS_RAM = 2.05; // OPS Script RAM (need to find a way to calculate it, rather than hardcoded)
 export const BKD_NAME = "chakaa.bin.installBackdoor.js"; // OPS Script name
@@ -31,7 +32,7 @@ export const H_NAME = "/chakaa/bin/hack.js"; // Grow Script name
 export const W_NAME = "/chakaa/bin/weaken.js"; // Grow Script name
 export const OP_RAM = 1.80; // Grow Script RAM
 export const S_NAME = "/chakaa/bin/share.js"; // Share Script name
-export const HACKNET_NODE_RATIO = 0.1 // Percentage of hacknet node used for hacking
+export const HACKNET_NODE_RATIO = 0 // Percentage of hacknet node used for hacking
 
 //Init config
 export const DELAY_BETWEEN_CHECKS = 60; // seconds
@@ -69,3 +70,9 @@ export const CORP_ACTION_LOOP = 2*1000;
 export const CORP_NAME = "MyCorpo";
 export const AGRI_NAME = "Agrifun";
 export const TOBA_NAME = "LaFumetteCestChouette";
+
+//Sleeves config
+export const SLEEVES_TIME_BETWEEN_BUYS = 5000.0 // Time to wait between checks.
+export const HACKORDER = ["hacking","hacking contracts","hackingcontracts"];
+export const FIELDORDER = ["field","fieldwork","field work"];
+export const SECUORDER = ["security","securitywork","security work"];

@@ -1,9 +1,9 @@
 //Do handle any hacknet stuff
 import { HACKNET_TIME_BETWEEN_BUYS } from 'chakaa/lib/config.js';
-import { info, log, debug, toMoney } from 'chakaa/lib/functions.js';
+import { info, log, debug, toMoney, niceNumberDisplay } from 'chakaa/lib/functions.js';
 
 export async function upgradeHacknet(ns, budget, did_upgrade=false) {
-    debug(ns,`UpgradeHacknet(budget=${budget})`);
+    debug(ns,`UpgradeHacknet(budget=${toMoney(budget)})`);
     let nodes = [];
     for(let i=0;i<ns.hacknet.numNodes();i++){
         let node = { id:i, cost:Infinity };
@@ -31,11 +31,11 @@ export async function upgradeHacknet(ns, budget, did_upgrade=false) {
 export async function buyNewHacknet(ns, budget) {
     // Make it more reluctant to buy more nodes the more nodes we have.
     let nhacknets = ns.hacknet.numNodes();
-    budget = budget / (1 + nhacknets);
-    debug(ns,`BuyNewHacknet(budget=${budget})`);
+    // budget = budget / (1 + nhacknets);
+    debug(ns,`BuyNewHacknet(budget=${toMoney(budget)})`);
     let cost = ns.hacknet.getPurchaseNodeCost();
     if(cost > budget) return false;
-    info(ns,`Buying hacknet-node-${nhacknets} for ${toMoney(ns,cost)}`);
+    info(ns,`Buying hacknet-node-${nhacknets} for ${toMoney(cost)}`);
     ns.hacknet.purchaseNode();
     return true;
 }
@@ -54,7 +54,7 @@ export async function spendHashes(ns, budget) {
     //We want this to be 100% if we're producing less than one hash per second,
     //gradually dropping off past that.
     let hash_budget = ns.hacknet.numHashes() / Math.log(Math.max(2,rate), 2)
-    debug(ns,`prd=${ns.hacknet.numHashes() - last_hashes}, rate=${rate}, hash_budget=${hash_budget}`);
+    debug(ns,`prd=${niceNumberDisplay(ns.hacknet.numHashes() - last_hashes,"","h")}, rate=${niceNumberDisplay(rate,"","h/s")}, hash_budget=${niceNumberDisplay(hash_budget,"","h")}`);
 
     let fullHashActions=["Generate Coding Contract"];
     for (const hashAction of fullHashActions) {

@@ -1,4 +1,4 @@
-import { HACK_RATIO,G_NAME,H_NAME,W_NAME,OP_RAM,HOME_RAM_RESERVED,MIN_MONEY_FOR_HACK,GROWTH_FACTOR,MIN_SLEEP_TIME, S_NAME, HACKNET_NODE_RATIO } from 'chakaa/lib/config.js';
+import { HACK_RATIO,G_NAME,H_NAME,W_NAME,OP_RAM,HOME_RAM_RESERVED,HOME_RAM_RESERVED_2,MIN_MONEY_FOR_HACK,GROWTH_FACTOR,MIN_SLEEP_TIME, S_NAME, HACKNET_NODE_RATIO } from 'chakaa/lib/config.js';
 import { info, log, error, debug, toMoney, toInt, walk, manualBackdoor } from 'chakaa/lib/functions.js';
 
 /**
@@ -29,7 +29,7 @@ export async function main(ns) {
     sleep = Math.max(Math.min(sleep, min_time_val) + 500, MIN_SLEEP_TIME);
   
     //writeTSV("/run/shodan/network.txt", network, {"host", "max_threads", "threads", "weaken", "grow", "hack", "priority", "money", "max_money"})
-    finishHome(ns);
+    //finishHome(ns);
 
     if(ns.args[0]=="once"){
       log(ns,`Would sleep for: ${toInt(ns,sleep/1000)}s, but breaking here because running once`);
@@ -48,7 +48,7 @@ export async function main(ns) {
 
 export async function finishHome(ns){
   //let avRam = Math.max(0,(ns.getServerRam("home")[0] - HOME_RAM_RESERVED - ns.getServerRam("home")[1]));
-  let avRam = Math.max(0,(ns.getServerRam("home")[0] - ns.getServerRam("home")[1]));
+  let avRam = Math.max(0,(ns.getServerRam("home")[0] - ns.getServerRam("home")[1]))/2;
   let avShareThreads = Math.floor(avRam/ns.getScriptRam(S_NAME))-1;
   
   if(avShareThreads>0){
@@ -82,7 +82,7 @@ export async function stat(ns, host) {
 // We special-case home by reserving HOME_RAM_RESERVED memory on it for the user and allocating the rest to OPSs.
 export async function scanHome(ns) {
 	var info = await stat(ns, "home");
-	info.max_threads = Math.floor(Math.max(0, info.ram - HOME_RAM_RESERVED)/OP_RAM)
+	info.max_threads = Math.floor(Math.max(0, info.ram - (ns.getServerRam("home")[0]>HOME_RAM_RESERVED_2?HOME_RAM_RESERVED_2:HOME_RAM_RESERVED))/OP_RAM)
   info.threads = info.max_threads
 
   for (let i = 0; i < info.ps.length; i++) {
